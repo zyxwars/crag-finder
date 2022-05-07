@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  name     String    @unique
+  password String
+  crags    Crag[]
+  comments Comment[]
+  visits   Visit[]
+  photos   Photo[]
+}
+
+model Crag {
+  id       Int       @id @default(autoincrement())
+  name     String
+  content  String
+  User     User?     @relation(fields: [authorId], references: [id])
+  authorId Int?
+  comments Comment[]
+  visits   Visit[]
+  photos   Photo[]
+}
+
+model Visit {
+  id       Int     @id @default(autoincrement())
+  Crag     Crag?   @relation(fields: [cragId], references: [id])
+  cragId   Int?
+  User     User?   @relation(fields: [authorId], references: [id])
+  authorId Int?
+  photos   Photo[]
+}
+
+model Comment {
+  id       Int    @id @default(autoincrement())
+  content  String
+  User     User?  @relation(fields: [authorId], references: [id])
+  authorId Int?
+  Crag     Crag?  @relation(fields: [cragId], references: [id])
+  cragId   Int?
+}
+
+model Photo {
+  id       Int    @id @default(autoincrement())
+  name     String
+  path     String
+  size     String
+  Visit    Visit? @relation(fields: [visitId], references: [id])
+  visitId  Int?
+  Crag     Crag?  @relation(fields: [cragId], references: [id])
+  cragId   Int?
+  User     User?  @relation(fields: [authorId], references: [id])
+  authorId Int?
+}
