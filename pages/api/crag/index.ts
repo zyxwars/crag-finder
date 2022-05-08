@@ -1,13 +1,15 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { withAuthorization } from "../../../lib/withAuthorization";
 import prisma from "../../../lib/prisma";
+import { sessionOptions } from "../../../lib/session";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  // TODO: Auth middleware
+export default withIronSessionApiRoute(
+  withAuthorization(handler),
+  sessionOptions
+);
 
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;
 
   switch (method) {
@@ -17,12 +19,11 @@ export default async function handler(
       const crag = await prisma.crag.create({
         data: {
           ...req.body,
-          author: { connect: { email: "test@test.com" } },
+          author: { connect: { id: req.session.user.id } },
         },
       });
 
       return res.status(201).json(crag);
-      break;
     case "DELETE":
       break;
 
