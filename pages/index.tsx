@@ -1,24 +1,38 @@
 import type { NextPage } from "next";
+import useSWR from "swr";
 import prisma from "../lib/prisma";
 
-interface Props {
-  users: any;
-}
+const Home: NextPage = () => {
+  const { data: crags, error: cragsError } = useSWR("/api/crag/recommended");
 
-const Home: NextPage<Props> = ({ users }) => {
   return (
     <main>
-      {users.map((user: any) => (
-        <div key={user.id}>{user.name}</div>
-      ))}
+      <div>Crags:</div>
+      {cragsError ? (
+        <div>Error loading crags: {cragsError.message}</div>
+      ) : !crags ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          {crags.map((crag: any) => (
+            <div key={crag.id}>{crag.name}</div>
+          ))}
+        </>
+      )}
     </main>
   );
 };
 
 export const getServerSideProps = async () => {
-  const users = await prisma.user.findMany();
+  const crags = await prisma.crag.findMany();
 
-  return { props: { users } };
+  return {
+    props: {
+      fallback: {
+        "/api/crag/recommended": crags,
+      },
+    },
+  };
 };
 
 export default Home;

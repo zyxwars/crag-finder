@@ -19,13 +19,20 @@ model User {
   comments Comment[]
   visits   Visit[]
   photos   Photo[]
+  sessions Session[]
+}
+
+model Session {
+  id     String @id
+  user   User?  @relation(fields: [userId], references: [id])
+  userId Int?
 }
 
 model Crag {
   id       Int       @id @default(autoincrement())
   name     String
   content  String
-  User     User?     @relation(fields: [authorId], references: [id])
+  author   User?     @relation(fields: [authorId], references: [id])
   authorId Int?
   comments Comment[]
   visits   Visit[]
@@ -34,9 +41,9 @@ model Crag {
 
 model Visit {
   id       Int     @id @default(autoincrement())
-  Crag     Crag?   @relation(fields: [cragId], references: [id])
+  crag     Crag?   @relation(fields: [cragId], references: [id])
   cragId   Int?
-  User     User?   @relation(fields: [authorId], references: [id])
+  author   User?   @relation(fields: [authorId], references: [id])
   authorId Int?
   photos   Photo[]
 }
@@ -44,9 +51,9 @@ model Visit {
 model Comment {
   id       Int    @id @default(autoincrement())
   content  String
-  User     User?  @relation(fields: [authorId], references: [id])
+  author   User?  @relation(fields: [authorId], references: [id])
   authorId Int?
-  Crag     Crag?  @relation(fields: [cragId], references: [id])
+  crag     Crag?  @relation(fields: [cragId], references: [id])
   cragId   Int?
 }
 
@@ -55,10 +62,10 @@ model Photo {
   name     String
   path     String
   size     String
-  Visit    Visit? @relation(fields: [visitId], references: [id])
+  visit    Visit? @relation(fields: [visitId], references: [id])
   visitId  Int?
-  Crag     Crag?  @relation(fields: [cragId], references: [id])
+  crag     Crag?  @relation(fields: [cragId], references: [id])
   cragId   Int?
-  User     User?  @relation(fields: [authorId], references: [id])
+  author   User?  @relation(fields: [authorId], references: [id])
   authorId Int?
 }
