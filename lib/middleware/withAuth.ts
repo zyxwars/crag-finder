@@ -1,7 +1,7 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import prisma from "./prisma";
+import prisma from "../prisma";
 
-export const withAuthorization =
+export const withAuth =
   (handler: NextApiHandler) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     if (!req.session.user) return res.status(401).send("no_session");

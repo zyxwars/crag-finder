@@ -1,13 +1,10 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { withAuthorization } from "../../../lib/withAuthorization";
+import { withAuth } from "../../../lib/middleware/withAuth";
 import prisma from "../../../lib/prisma";
 import { sessionOptions } from "../../../lib/session";
 
-export default withIronSessionApiRoute(
-  withAuthorization(handler),
-  sessionOptions
-);
+export default withIronSessionApiRoute(withAuth(handler), sessionOptions);
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;
@@ -15,10 +12,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (method) {
     case "POST":
       // TODO: Validate input
-      // TODO: Use user from auth middleware
       const crag = await prisma.crag.create({
         data: {
           ...req.body,
+          // @ts-ignore req.session will always exist exist after passing withAuthorization middleware
           author: { connect: { id: req.session.user.id } },
         },
       });

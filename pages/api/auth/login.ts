@@ -8,7 +8,6 @@ export default withIronSessionApiRoute(handler, sessionOptions);
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { email } = await req.body;
   // TODO: Check password
-  // TODO: Store session in db to invalidate it
 
   try {
     const user = await prisma.user.findUnique({
@@ -19,8 +18,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (!user) return res.status(401);
 
-    // TODO: Return object with only specific properties
-    req.session.user = user;
+    req.session.user = { id: user.id, sessionVersion: user.sessionVersion };
 
     await req.session.save();
     res.json(user);
