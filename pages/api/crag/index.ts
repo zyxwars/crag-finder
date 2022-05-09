@@ -9,14 +9,14 @@ export default withIronSessionApiRoute(withAuth(handler), sessionOptions);
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;
 
+  //@ts-ignore
   switch (method) {
     case "POST":
       // TODO: Validate input
       const crag = await prisma.crag.create({
         data: {
           ...req.body,
-          // @ts-ignore req.session will always exist exist after passing withAuthorization middleware
-          author: { connect: { id: req.session.user.id } },
+          author: { connect: { id: req?.session?.user?.id } },
         },
       });
 
