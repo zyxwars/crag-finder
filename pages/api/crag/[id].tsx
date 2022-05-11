@@ -7,10 +7,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  try {
-    const crags = await prisma.crag.findMany();
+  const { query } = req;
 
-    return res.status(200).json(crags);
+  if (!query.id) return res.status(400).send("invalid_id");
+
+  try {
+    const crag = await prisma.crag.findUnique({
+      where: { id: Number(query.id) },
+    });
+
+    return res.status(200).json(crag);
   } catch (error) {
     console.log(error);
     sendError(res);

@@ -1,26 +1,28 @@
-import { Crag, Prisma } from "@prisma/client";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import useSWR, { unstable_serialize } from "swr";
 import { withAuthSsr } from "../../lib/middleware/withAuthSsr";
 import prisma from "../../lib/prisma";
 import { sessionOptions } from "../../lib/session";
 
-interface Props {
-  crag: Crag;
-}
-
-const Crag = ({ crag }: Props) => {
+const Crag = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  const { data: crag, error } = useSWR("/api/crag/" + id);
+
   return (
     <>
-      <div>{crag.name}</div>
-      <article className="prose">
-        <ReactMarkdown>{crag.content}</ReactMarkdown>
-      </article>
+      {crag && (
+        <>
+          <div>{crag.name}</div>
+          <article className="prose">
+            <ReactMarkdown>{crag.content}</ReactMarkdown>
+          </article>
+        </>
+      )}
     </>
   );
 };
@@ -37,7 +39,9 @@ export const getServerSideProps = withIronSessionSsr(
     return {
       props: {
         session,
-        crag,
+        fallback: {
+          [unstable_serialize(["api", "crag", id])]: crag,
+        },
       },
     };
   },

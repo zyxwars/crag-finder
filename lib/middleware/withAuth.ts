@@ -10,7 +10,7 @@ export const withAuth =
       where: { id: req.session.user.id },
     });
 
-    if (!user) return res.status(404).send("no_user");
+    if (!user) return res.status(401).send("no_user");
 
     if (user.sessionVersion > req.session.user.sessionVersion)
       return res.status(401).send("expired_session");

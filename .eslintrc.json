@@ -26,6 +26,7 @@
     "react/prop-types": "off",
     // Prisma stuff
     "no-case-declarations": "off",
+    // TODO: These are not working properly
     "@typescript-eslint/no-floating-promises": "warn",
     "@typescript-eslint/no-misused-promises": "warn"
   }
