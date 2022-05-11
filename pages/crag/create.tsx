@@ -1,8 +1,10 @@
 import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { withAuthSsr } from "../../lib/middleware/withAuthSsr";
+import { redirectSsr } from "../../lib/redirectSsr";
 import { sessionOptions } from "../../lib/session";
 
 type Inputs = {
@@ -11,6 +13,8 @@ type Inputs = {
 };
 
 const Create = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -43,6 +47,8 @@ const Create = () => {
 
 export const getServerSideProps = withIronSessionSsr(async ({ req, res }) => {
   const session = await withAuthSsr(req);
+
+  if (!session) redirectSsr(res, "/auth/login?from=/crag/create");
 
   return { props: { session } };
 }, sessionOptions);

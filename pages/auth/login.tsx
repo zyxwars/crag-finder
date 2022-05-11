@@ -1,7 +1,11 @@
 import axios from "axios";
+import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { withAuthSsr } from "../../lib/middleware/withAuthSsr";
+import { redirectSsr } from "../../lib/redirectSsr";
+import { sessionOptions } from "../../lib/session";
 
 type Inputs = {
   email: string;
@@ -20,7 +24,7 @@ const Login = () => {
     try {
       const res = await axios.post("/api/auth/login", data);
 
-      router.push("/");
+      router.push((router.query.from as string) || "/");
     } catch (error) {
       console.log(error);
     }
@@ -47,5 +51,13 @@ const Login = () => {
     </div>
   );
 };
+
+export const getServerSideProps = withIronSessionSsr(async ({ req, res }) => {
+  const session = await withAuthSsr(req);
+
+  if (session) redirectSsr(res, "/auth/logout?from=/auth/login");
+
+  return { props: { session } };
+}, sessionOptions);
 
 export default Login;
