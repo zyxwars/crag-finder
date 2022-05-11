@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import useSWR, { unstable_serialize } from "swr";
-import { withAuthSsr } from "../../lib/middleware/withAuthSsr";
-import prisma from "../../lib/prisma";
-import { sessionOptions } from "../../lib/session";
+import { withAuthSsr } from "../../../lib/middleware/withAuthSsr";
+import prisma from "../../../lib/prisma";
+import { sessionOptions } from "../../../lib/session";
 
 const Crag = () => {
   const router = useRouter();

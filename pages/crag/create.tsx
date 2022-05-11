@@ -24,14 +24,15 @@ const Create = () => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const res = await axios.post("/api/crag", data);
-      console.log(res);
+
+      router.push("/crag/" + res.data.id);
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <input {...register("name", { required: true })} placeholder="Name..." />
       {errors.name && <span>This field is required</span>}
       <textarea

@@ -34,7 +34,7 @@ const Register = () => {
     <div>
       <div>Register</div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <input
           {...register("name", { required: true })}
           placeholder="Name..."

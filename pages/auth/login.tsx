@@ -33,7 +33,7 @@ const Login = () => {
     <div>
       <div>Login</div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <input
           type="email"
           {...register("email", { required: true })}

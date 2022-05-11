@@ -20,18 +20,9 @@ const Home: NextPage<Props> = ({ session }) => {
     <main>
       {session && (
         <>
-          <button
-            onClick={async () => {
-              try {
-                await axios.post("/api/auth/logout");
-                router.push("/auth/login");
-              } catch (error) {
-                console.log(error);
-              }
-            }}
-          >
-            Logout
-          </button>
+          <Link href="/crag/create">
+            <a>Create a new crag</a>
+          </Link>
         </>
       )}
       <div>Crags:</div>
@@ -40,13 +31,13 @@ const Home: NextPage<Props> = ({ session }) => {
       ) : !crags ? (
         <div>Loading...</div>
       ) : (
-        <>
+        <div className="flex flex-col">
           {crags.map((crag: any) => (
             <Link key={crag.id} href={"/crag/" + crag.id}>
               <a>{crag.name}</a>
             </Link>
           ))}
-        </>
+        </div>
       )}
     </main>
   );

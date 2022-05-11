@@ -10,26 +10,18 @@ export default withIronSessionApiRoute(withAuth(handler), sessionOptions);
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;
 
-  switch (method) {
-    case "POST":
-      try {
-        // TODO: Validate input
-        const crag = await prisma.crag.create({
-          data: {
-            ...req.body,
-            author: { connect: { id: req?.session?.user?.id } },
-          },
-        });
+  try {
+    // TODO: Validate input
+    const crag = await prisma.crag.create({
+      data: {
+        ...req.body,
+        author: { connect: { id: req?.session?.user?.id } },
+      },
+    });
 
-        return res.status(201).json(crag);
-      } catch (error) {
-        console.log(error);
-        sendError(res);
-      }
-    case "DELETE":
-      break;
-
-    default:
-      break;
+    return res.status(201).json(crag);
+  } catch (error) {
+    console.log(error);
+    sendError(res);
   }
 }
