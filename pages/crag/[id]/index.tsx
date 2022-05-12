@@ -1,5 +1,6 @@
 import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import ReactMarkdown from "react-markdown";
@@ -23,6 +24,15 @@ const Crag = () => {
           <article className="prose">
             <ReactMarkdown>{crag.content}</ReactMarkdown>
           </article>
+          {crag.visits &&
+            crag.visits.map((visit: any) => (
+              <>
+                {visit.photos.map((photo: any) => (
+                  <Image src={"/api/static/" + photo.path} layout="fill" />
+                ))}
+              </>
+            ))}
+
           <CreateVisit
             onSubmit={(data) => {
               try {
@@ -52,16 +62,16 @@ export const getServerSideProps = withIronSessionSsr(
   async ({ req, res, params }) => {
     const session = await withAuthSsr(req);
 
-    //@ts-ignore The iron session typing broke this
-    const { id } = params;
-
-    const crag = await prisma.crag.findUnique({ where: { id: Number(id) } });
+    const crag = await prisma.crag.findUnique({
+      where: { id: Number(params?.id) },
+      include: { visits: { select: { photos: true } } },
+    });
 
     return {
       props: {
         session,
         fallback: {
-          [unstable_serialize(["api", "crag", id])]: crag,
+          [unstable_serialize(["api", "crag", params?.id])]: crag,
         },
       },
     };

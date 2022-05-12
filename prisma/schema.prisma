@@ -55,7 +55,7 @@ model Photo {
   id       Int    @id @default(autoincrement())
   name     String
   path     String
-  size     String
+  size     Int
   visit    Visit? @relation(fields: [visitId], references: [id])
   visitId  Int?
   crag     Crag?  @relation(fields: [cragId], references: [id])
