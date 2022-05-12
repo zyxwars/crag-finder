@@ -8,8 +8,6 @@ import { sessionOptions } from "../../../lib/session";
 export default withIronSessionApiRoute(withAuth(handler), sessionOptions);
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { method } = req;
-
   try {
     // TODO: Validate input
     const crag = await prisma.crag.create({

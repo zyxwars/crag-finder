@@ -1,11 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { withAuth } from "../../../lib/middleware/withAuth";
-import { withOptionalAuth } from "../../../lib/middleware/withOptionalAuth";
-import prisma from "../../../lib/prisma";
-import { sendUnauthorized, sendError } from "../../../lib/responses";
-import { sessionOptions } from "../../../lib/session";
+import { withAuth } from "../../../../lib/middleware/withAuth";
+import { withOptionalAuth } from "../../../../lib/middleware/withOptionalAuth";
+import prisma from "../../../../lib/prisma";
+import { sendUnauthorized, sendError } from "../../../../lib/responses";
+import { sessionOptions } from "../../../../lib/session";
 
 export default withIronSessionApiRoute(
   withOptionalAuth(handler),
