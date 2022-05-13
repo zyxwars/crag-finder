@@ -2,14 +2,19 @@ import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useForm, SubmitHandler, useFormState } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  useFormState,
+  UseFormReset,
+} from "react-hook-form";
 
 type Inputs = {
   photos: File[];
 };
 
 interface Props {
-  onSubmit: SubmitHandler<Inputs>;
+  onSubmit: (data: Inputs, reset: UseFormReset<Inputs>) => void;
 }
 
 const CreateVisit = ({ onSubmit }: Props) => {
@@ -18,13 +23,17 @@ const CreateVisit = ({ onSubmit }: Props) => {
     handleSubmit,
     formState: { errors },
     watch,
+    reset,
   } = useForm<Inputs>();
 
   const photos = watch("photos");
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+      <form
+        onSubmit={handleSubmit((data) => onSubmit(data, reset))}
+        className="flex flex-col"
+      >
         <input
           {...register("photos", { required: true })}
           type="file"

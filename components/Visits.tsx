@@ -20,15 +20,17 @@ const Visits = ({ data, error }: Props) => {
   return (
     <div>
       {data.map((visit) => (
-        <>
+        <div key={visit.id}>
+          {visit.id}
           {visit.photos.map((photo) => (
             <Image
+              key={photo.id}
               src={"/api/uploads/" + photo.path}
               width={100}
               height={100}
             />
           ))}
-        </>
+        </div>
       ))}
     </div>
   );

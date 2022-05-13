@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import useSWR, { unstable_serialize } from "swr";
+import useSWR, { mutate, unstable_serialize } from "swr";
 import CragDetail from "../../../components/CragDetail";
 import CreateVisit from "../../../components/CreateVisit";
 import Visits from "../../../components/Visits";
@@ -18,9 +18,11 @@ const Crag = () => {
 
   const { data: crag, error: cragError } = useSWR("/api/crag/" + id);
 
-  const { data: visits, error: visitsError } = useSWR(
-    "/api/crag/" + id + "/visits"
-  );
+  const {
+    data: visits,
+    error: visitsError,
+    mutate: mutateVisits,
+  } = useSWR("/api/crag/" + id + "/visits");
 
   return (
     <>
@@ -28,19 +30,16 @@ const Crag = () => {
       <Visits data={visits} error={visitsError} />
 
       <CreateVisit
-        onSubmit={(data) => {
+        onSubmit={async (data, reset) => {
           try {
             Array.from(data.photos).forEach(async (photo) => {
               const formData = new FormData();
               formData.set("photo", photo);
 
-              const res = await axios.post(
-                "/api/crag/" + id + "/visit",
-                formData
-              );
+              await axios.post("/api/crag/" + id + "/visit", formData);
             });
 
-            // TODO: Refetch visits
+            reset();
           } catch (error) {
             console.log(error);
           }
