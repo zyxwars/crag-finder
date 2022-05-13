@@ -1,7 +1,7 @@
 ### Current
 
-- [ ] File serving
-- [ ] Fix duplicate code between getStatic and api route
+- [x] File serving
+- [ ] Fix duplicate code between getStatic and api route - use api routes in getStatic
 
 ### Back burner
 

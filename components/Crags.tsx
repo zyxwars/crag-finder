@@ -2,17 +2,12 @@ import { Crag } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
 import useSWR from "swr";
+import SWRError from "./SWRError";
 
 const Crags = () => {
   const { data, error } = useSWR("/api/crag/recommended");
 
-  if (error)
-    return (
-      <>
-        <div>{error.message}</div>
-        <div>Response message {error?.response?.data}</div>
-      </>
-    );
+  if (error) return <SWRError error={error} />;
 
   if (!data) return <div>Loading...</div>;
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import useSWR, { unstable_serialize } from "swr";
+import CragDetail from "../../../components/CragDetail";
 import CreateVisit from "../../../components/CreateVisit";
 import Visits from "../../../components/Visits";
 import { withAuthSsr } from "../../../lib/middleware/withAuthSsr";
@@ -15,39 +16,29 @@ const Crag = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: crag, error } = useSWR("/api/crag/" + id);
-
   return (
     <>
-      {crag && (
-        <>
-          <div>{crag.name}</div>
-          <article className="prose">
-            <ReactMarkdown>{crag.content}</ReactMarkdown>
-          </article>
-          {crag.visits && <Visits visits={crag.visits} />}
+      <CragDetail id={Number(id)} />
 
-          <CreateVisit
-            onSubmit={(data) => {
-              try {
-                Array.from(data.photos).forEach(async (photo) => {
-                  const formData = new FormData();
-                  formData.set("photo", photo);
+      <CreateVisit
+        onSubmit={(data) => {
+          try {
+            Array.from(data.photos).forEach(async (photo) => {
+              const formData = new FormData();
+              formData.set("photo", photo);
 
-                  const res = await axios.post(
-                    "/api/crag/" + crag.id + "/visit",
-                    formData
-                  );
-                });
+              const res = await axios.post(
+                "/api/crag/" + id + "/visit",
+                formData
+              );
+            });
 
-                // TODO: Reload swr
-              } catch (error) {
-                console.log(error);
-              }
-            }}
-          />
-        </>
-      )}
+            // TODO: Reload swr
+          } catch (error) {
+            console.log(error);
+          }
+        }}
+      />
     </>
   );
 };
@@ -65,7 +56,7 @@ export const getServerSideProps = withIronSessionSsr(
       props: {
         session,
         fallback: {
-          [unstable_serialize(["api", "crag", params?.id])]: crag,
+          [unstable_serialize("/api/crag/" + Number(params?.id))]: crag,
         },
       },
     };
