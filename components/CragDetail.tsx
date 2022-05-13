@@ -5,12 +5,11 @@ import useSWR from "swr";
 import SWRError from "./SWRError";
 
 interface Props {
-  id: Number;
+  data: Crag;
+  error: any;
 }
 
-const CragDetail = ({ id }: Props) => {
-  const { data, error } = useSWR("/api/crag/" + id);
-
+const CragDetail = ({ data, error }: Props) => {
   if (error) return <SWRError error={error} />;
 
   if (!data) return <div>Loading...</div>;

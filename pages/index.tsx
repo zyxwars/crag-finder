@@ -1,6 +1,7 @@
 import { withIronSessionSsr } from "iron-session/next";
 import type { NextPage } from "next";
 import Link from "next/link";
+import useSWR from "swr";
 import Crags from "../components/Crags";
 import { withAuthSsr } from "../lib/middleware/withAuthSsr";
 import prisma from "../lib/prisma";
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const Home: NextPage<Props> = ({ session }) => {
+  const { data, error } = useSWR("/api/crag/recommended");
+
   return (
     <main>
       {session && (
@@ -22,7 +25,7 @@ const Home: NextPage<Props> = ({ session }) => {
         </>
       )}
 
-      <Crags />
+      <Crags data={data} error={error} />
     </main>
   );
 };

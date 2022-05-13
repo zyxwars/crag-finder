@@ -1,20 +1,25 @@
 import { Photo, Visit } from "@prisma/client";
 import Image from "next/image";
 import React from "react";
+import SWRError from "./SWRError";
 
 type VisitWithPhotos = Visit & {
   photos: Photo[];
 };
 
 interface Props {
-  visits: VisitWithPhotos[];
+  data: VisitWithPhotos[];
+  error: any;
 }
 
-const Visits = ({ visits }: Props) => {
+const Visits = ({ data, error }: Props) => {
+  if (error) return <SWRError error={error} />;
+
+  if (!data) return <div>Loading...</div>;
+
   return (
     <div>
-      Visits:
-      {visits.map((visit) => (
+      {data.map((visit) => (
         <>
           {visit.photos.map((photo) => (
             <Image

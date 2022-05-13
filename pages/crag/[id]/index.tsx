@@ -16,9 +16,16 @@ const Crag = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  const { data: crag, error: cragError } = useSWR("/api/crag/" + id);
+
+  const { data: visits, error: visitsError } = useSWR(
+    "/api/crag/" + id + "/visits"
+  );
+
   return (
     <>
-      <CragDetail id={Number(id)} />
+      <CragDetail data={crag} error={cragError} />
+      <Visits data={visits} error={visitsError} />
 
       <CreateVisit
         onSubmit={(data) => {
@@ -33,7 +40,7 @@ const Crag = () => {
               );
             });
 
-            // TODO: Reload swr
+            // TODO: Refetch visits
           } catch (error) {
             console.log(error);
           }
@@ -49,7 +56,6 @@ export const getServerSideProps = withIronSessionSsr(
 
     const crag = await prisma.crag.findUnique({
       where: { id: Number(params?.id) },
-      include: { visits: { select: { photos: true } } },
     });
 
     return {
