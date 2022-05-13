@@ -28,7 +28,7 @@ const Crag = () => {
             crag.visits.map((visit: any) => (
               <>
                 {visit.photos.map((photo: any) => (
-                  <Image src={"/api/static/" + photo.path} layout="fill" />
+                  <Image src={"/api/uploads/" + photo.path} layout="fill" />
                 ))}
               </>
             ))}

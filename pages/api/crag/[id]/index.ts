@@ -38,7 +38,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       try {
         const crag = await prisma.crag.findUnique({
           where: { id: Number(query.id) },
-          include: { visits: { select: { photos: true } } },
+          include: { visits: { include: { photos: true } } },
         });
 
         return res.status(200).json(crag);

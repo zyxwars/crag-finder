@@ -26,7 +26,7 @@ model Crag {
   id       Int       @id @default(autoincrement())
   name     String
   content  String
-  author   User?     @relation(fields: [authorId], references: [id])
+  author   User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int?
   comments Comment[]
   visits   Visit[]
@@ -35,9 +35,9 @@ model Crag {
 
 model Visit {
   id       Int     @id @default(autoincrement())
-  crag     Crag?   @relation(fields: [cragId], references: [id])
+  crag     Crag?   @relation(fields: [cragId], references: [id], onDelete: Cascade)
   cragId   Int?
-  author   User?   @relation(fields: [authorId], references: [id])
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int?
   photos   Photo[]
 }
@@ -45,9 +45,9 @@ model Visit {
 model Comment {
   id       Int    @id @default(autoincrement())
   content  String
-  author   User?  @relation(fields: [authorId], references: [id])
+  author   User?  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int?
-  crag     Crag?  @relation(fields: [cragId], references: [id])
+  crag     Crag?  @relation(fields: [cragId], references: [id], onDelete: Cascade)
   cragId   Int?
 }
 
@@ -56,10 +56,10 @@ model Photo {
   name     String
   path     String
   size     Int
-  visit    Visit? @relation(fields: [visitId], references: [id])
+  visit    Visit? @relation(fields: [visitId], references: [id], onDelete: Cascade)
   visitId  Int?
-  crag     Crag?  @relation(fields: [cragId], references: [id])
+  crag     Crag?  @relation(fields: [cragId], references: [id], onDelete: Cascade)
   cragId   Int?
-  author   User?  @relation(fields: [authorId], references: [id])
+  author   User?  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int?
 }

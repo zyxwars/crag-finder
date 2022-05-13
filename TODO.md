@@ -1,6 +1,7 @@
 ### Current
 
 - [ ] File serving
+- [ ] Fix duplicate code between getStatic and api route
 
 ### Back burner
 
