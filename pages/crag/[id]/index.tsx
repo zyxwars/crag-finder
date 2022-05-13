@@ -6,6 +6,7 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import useSWR, { unstable_serialize } from "swr";
 import CreateVisit from "../../../components/CreateVisit";
+import Visits from "../../../components/Visits";
 import { withAuthSsr } from "../../../lib/middleware/withAuthSsr";
 import prisma from "../../../lib/prisma";
 import { sessionOptions } from "../../../lib/session";
@@ -24,14 +25,7 @@ const Crag = () => {
           <article className="prose">
             <ReactMarkdown>{crag.content}</ReactMarkdown>
           </article>
-          {crag.visits &&
-            crag.visits.map((visit: any) => (
-              <>
-                {visit.photos.map((photo: any) => (
-                  <Image src={"/api/uploads/" + photo.path} layout="fill" />
-                ))}
-              </>
-            ))}
+          {crag.visits && <Visits visits={crag.visits} />}
 
           <CreateVisit
             onSubmit={(data) => {
