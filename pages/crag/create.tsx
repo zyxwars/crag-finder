@@ -25,7 +25,7 @@ const Create = () => {
     try {
       const res = await axios.post("/api/crag", data);
 
-      router.push("/crag/" + res.data.id);
+      await router.push("/crag/" + res.data.id);
     } catch (error) {
       console.log(error);
     }

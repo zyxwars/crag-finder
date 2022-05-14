@@ -1,5 +1,6 @@
 import { Photo, Visit } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import SWRError from "./SWRError";
 
@@ -20,17 +21,20 @@ const Visits = ({ data, error }: Props) => {
   return (
     <div>
       {data.map((visit) => (
-        <div key={visit.id}>
-          {visit.id}
-          {visit.photos.map((photo) => (
-            <Image
-              key={photo.id}
-              src={"/api/uploads/" + photo.path}
-              width={100}
-              height={100}
-            />
-          ))}
-        </div>
+        <Link key={visit.id} href={"/visit/" + visit.id}>
+          <div>
+            {visit.description}
+            {visit.photos.map((photo) => (
+              <Image
+                key={photo.id}
+                src={"/api/uploads/" + photo.path}
+                width={100}
+                height={100}
+                alt={photo.name}
+              />
+            ))}
+          </div>
+        </Link>
       ))}
     </div>
   );

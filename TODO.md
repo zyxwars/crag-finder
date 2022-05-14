@@ -2,6 +2,9 @@
 
 - [x] File serving
 - [ ] Fix duplicate code between getStatic and api route - extract from api to universal file
+- [ ] Add visit detail, delete
+- [ ] Fix visit uploading only single file
+- [ ] Allow to upload only images
 
 ### Back burner
 
@@ -19,3 +22,4 @@
 - [ ] Check crag privileges for delete and updates
 - [ ] Add update - [ ] Crag - [ ] Visit - [ ] Comment
 - [ ] Get ui library
+- [ ] Optimize image sizing, thumbnails

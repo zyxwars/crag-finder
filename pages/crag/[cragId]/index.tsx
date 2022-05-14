@@ -1,6 +1,7 @@
 import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import ReactMarkdown from "react-markdown";
@@ -14,54 +15,41 @@ import { sessionOptions } from "../../../lib/session";
 
 const Crag = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { cragId } = router.query;
 
-  const { data: crag, error: cragError } = useSWR("/api/crag/" + id);
+  const { data: crag, error: cragError } = useSWR("/api/crag/" + cragId);
 
   const {
     data: visits,
     error: visitsError,
     mutate: mutateVisits,
-  } = useSWR("/api/crag/" + id + "/visits");
+  } = useSWR("/api/crag/" + cragId + "/visits");
 
   return (
     <>
       <CragDetail data={crag} error={cragError} />
       <Visits data={visits} error={visitsError} />
 
-      <CreateVisit
-        onSubmit={async (data, reset) => {
-          try {
-            Array.from(data.photos).forEach(async (photo) => {
-              const formData = new FormData();
-              formData.set("photo", photo);
-
-              await axios.post("/api/crag/" + id + "/visit", formData);
-            });
-
-            reset();
-          } catch (error) {
-            console.log(error);
-          }
-        }}
-      />
+      <Link href={"/visit/create?cragId=" + cragId}>
+        <a>Post visit</a>
+      </Link>
     </>
   );
 };
 
 export const getServerSideProps = withIronSessionSsr(
-  async ({ req, res, params }) => {
+  async ({ req, params }) => {
     const session = await withAuthSsr(req);
 
     const crag = await prisma.crag.findUnique({
-      where: { id: Number(params?.id) },
+      where: { id: Number(params?.cragId) },
     });
 
     return {
       props: {
         session,
         fallback: {
-          [unstable_serialize("/api/crag/" + Number(params?.id))]: crag,
+          [unstable_serialize("/api/crag/" + Number(params?.cragId))]: crag,
         },
       },
     };

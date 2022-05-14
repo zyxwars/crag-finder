@@ -6,11 +6,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.query;
+  const { cragId } = req.query;
 
   try {
     const visits = await prisma.visit.findMany({
-      where: { cragId: Number(id) },
+      where: { cragId: Number(cragId) },
       include: { photos: true },
     });
 

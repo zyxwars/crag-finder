@@ -15,7 +15,7 @@ export default withIronSessionApiRoute(
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { query, method } = req;
 
-  if (!query.id) return res.status(400).send("invalid_id");
+  if (!query.cragId) return res.status(400).send("invalid_id");
 
   switch (method) {
     case "DELETE":
@@ -24,7 +24,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       // TODO: Check crag privileges
       try {
         await prisma.crag.delete({
-          where: { id: Number(query.id) },
+          where: { id: Number(query.cragId) },
         });
 
         return res.status(200).send("crag_deleted");
@@ -37,7 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     default:
       try {
         const crag = await prisma.crag.findUnique({
-          where: { id: Number(query.id) },
+          where: { id: Number(query.cragId) },
           include: { visits: { include: { photos: true } } },
         });
 

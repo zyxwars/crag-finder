@@ -16,7 +16,9 @@ const Edit = () => {
       <button
         onClick={async () => {
           try {
-            const res = await axios.delete("/api/crag/" + router?.query?.id);
+            const res = await axios.delete(
+              "/api/crag/" + router?.query?.cragId
+            );
 
             router.push("/");
           } catch (error) {
@@ -35,7 +37,7 @@ export const getServerSideProps = withIronSessionSsr(
     const session = await withAuthSsr(req);
 
     if (!session)
-      redirectSsr(res, "/auth/login?from=/crag/" + query.id + "/edit");
+      redirectSsr(res, "/auth/login?from=/crag/" + query.cragId + "/edit");
 
     return { props: { session } };
   },

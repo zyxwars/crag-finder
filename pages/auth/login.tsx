@@ -24,7 +24,7 @@ const Login = () => {
     try {
       const res = await axios.post("/api/auth/login", data);
 
-      router.push((router.query.from as string) || "/");
+      await router.push((router.query.from as string) || "/");
     } catch (error) {
       console.log(error);
     }
