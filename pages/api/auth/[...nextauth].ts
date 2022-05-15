@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 import prisma from "../../../lib/prisma";
 
@@ -13,9 +13,9 @@ export default NextAuth({
         },
         password: { label: "Password", type: "password" },
       },
-      authorize: (credentials) => {
+      authorize: async (credentials) => {
         // TODO: Add password
-        const user = prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
           where: { email: credentials?.email },
         });
 
@@ -23,4 +23,21 @@ export default NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (!user) return token;
+
+      const { id, name, sessionVersion } = user;
+      token = { ...token, id, name, sessionVersion };
+
+      return token;
+    },
+    async session({ session, token }) {
+      const { id, name, sessionVersion } = token;
+
+      session.user = { id, name, sessionVersion };
+
+      return session;
+    },
+  },
 });

@@ -7,25 +7,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // TODO: Get user from session
   const session = await getSession({ req });
-
   if (!session) return sendUnauthorized(res);
 
-  console.log(session);
+  // TODO: Validate input
+  const crag = await prisma.crag.create({
+    data: {
+      ...req.body,
+      author: { connect: { id: session.user.id } },
+    },
+  });
 
-  try {
-    // TODO: Validate input
-    const crag = await prisma.crag.create({
-      data: {
-        ...req.body,
-        author: { connect: { email: session.user?.email } },
-      },
-    });
-
-    return res.status(201).json(crag);
-  } catch (error) {
-    console.log(error);
-    sendError(res);
-  }
+  return res.status(201).json(crag);
 }

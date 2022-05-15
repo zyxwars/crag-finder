@@ -8,15 +8,10 @@ export default async function handler(
 ) {
   const { cragId } = req.query;
 
-  try {
-    const visits = await prisma.visit.findMany({
-      where: { cragId: Number(cragId) },
-      include: { photos: true },
-    });
+  const visits = await prisma.visit.findMany({
+    where: { cragId: Number(cragId) },
+    include: { photos: true },
+  });
 
-    res.json(visits);
-  } catch (error) {
-    console.log(error);
-    sendError(res);
-  }
+  res.json(visits);
 }

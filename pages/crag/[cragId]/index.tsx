@@ -22,11 +22,10 @@ const Crag = () => {
   return (
     <>
       <CragDetail data={crag} error={cragError} />
-      <Visits data={visits} error={visitsError} />
-
       <Link href={"/visit/create?cragId=" + cragId}>
         <a>Post visit</a>
       </Link>
+      <Visits data={visits} error={visitsError} />
     </>
   );
 };

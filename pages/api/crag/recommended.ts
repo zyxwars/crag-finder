@@ -7,12 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  try {
-    const crags = await prisma.crag.findMany();
+  const crags = await prisma.crag.findMany();
 
-    return res.status(200).json(crags);
-  } catch (error) {
-    console.log(error);
-    sendError(res);
-  }
+  return res.status(200).json(crags);
 }

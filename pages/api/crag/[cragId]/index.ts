@@ -28,17 +28,11 @@ export default async function handler(
       break;
 
     default:
-      try {
-        const crag = await prisma.crag.findUnique({
-          where: { id: Number(query.cragId) },
-          include: { visits: { include: { photos: true } } },
-        });
+      const crag = await prisma.crag.findUnique({
+        where: { id: Number(query.cragId) },
+        include: { visits: { include: { photos: true } } },
+      });
 
-        return res.status(200).json(crag);
-      } catch (error) {
-        console.log(error);
-        sendError(res);
-      }
-      break;
+      return res.status(200).json(crag);
   }
 }
