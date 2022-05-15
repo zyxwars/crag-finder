@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import useSWR from "swr";
-import Crags from "../components/Crags";
+import Crags from "../lib/components/Crags";
 import prisma from "../lib/prisma";
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";

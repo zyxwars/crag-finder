@@ -3,8 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, unstable_serialize } from "swr";
-import CragDetail from "../../../components/CragDetail";
-import Visits from "../../../components/Visits";
+import CragDetail from "../../../lib/components/CragDetail";
+import Visits from "../../../lib/components/Visits";
 import prisma from "../../../lib/prisma";
 
 const Crag = () => {

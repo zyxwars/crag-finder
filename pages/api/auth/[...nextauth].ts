@@ -27,15 +27,15 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (!user) return token;
 
-      const { id, name, sessionVersion } = user;
-      token = { ...token, id, name, sessionVersion };
+      const { id, name } = user;
+      token = { ...token, id, name };
 
       return token;
     },
     async session({ session, token }) {
-      const { id, name, sessionVersion } = token;
+      const { id, name } = token;
 
-      session.user = { id, name, sessionVersion };
+      session.user = { id, name };
 
       return session;
     },
