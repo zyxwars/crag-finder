@@ -1,19 +1,25 @@
-import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { withAuth } from "../../../lib/middleware/withAuth";
+import { getSession } from "next-auth/react";
 import prisma from "../../../lib/prisma";
-import { sendError } from "../../../lib/responses";
-import { sessionOptions } from "../../../lib/session";
+import { sendError, sendUnauthorized } from "../../../lib/responses";
 
-export default withIronSessionApiRoute(withAuth(handler), sessionOptions);
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  // TODO: Get user from session
+  const session = await getSession({ req });
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (!session) return sendUnauthorized(res);
+
+  console.log(session);
+
   try {
     // TODO: Validate input
     const crag = await prisma.crag.create({
       data: {
         ...req.body,
-        author: { connect: { id: req?.session?.user?.id } },
+        author: { connect: { email: session.user?.email } },
       },
     });
 

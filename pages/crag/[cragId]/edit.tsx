@@ -1,11 +1,9 @@
 import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
+import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { withAuthSsr } from "../../../lib/middleware/withAuthSsr";
-import { redirectSsr } from "../../../lib/redirectSsr";
-import { sessionOptions } from "../../../lib/session";
 
 const Edit = () => {
   const router = useRouter();
@@ -20,7 +18,7 @@ const Edit = () => {
               "/api/crag/" + router?.query?.cragId
             );
 
-            router.push("/");
+            await router.push("/");
           } catch (error) {
             console.log(error);
           }
@@ -32,16 +30,12 @@ const Edit = () => {
   );
 };
 
-export const getServerSideProps = withIronSessionSsr(
-  async ({ req, res, query }) => {
-    const session = await withAuthSsr(req);
-
-    if (!session)
-      redirectSsr(res, "/auth/login?from=/crag/" + query.cragId + "/edit");
-
-    return { props: { session } };
-  },
-  sessionOptions
-);
-
+export const getServerSideProps = async ({
+  req,
+  res,
+  params,
+}: GetServerSidePropsContext) => {
+  // TODO: Check auth
+  return { props: {} };
+};
 export default Edit;

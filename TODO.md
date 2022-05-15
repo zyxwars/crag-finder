@@ -5,6 +5,7 @@
 - [ ] Add visit detail, delete
 - [ ] Fix visit uploading only single file
 - [ ] Allow to upload only images
+- [ ] withErrorHandling try catch wrapper
 
 ### Back burner
 

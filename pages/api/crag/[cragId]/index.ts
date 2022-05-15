@@ -1,26 +1,19 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { withAuth } from "../../../../lib/middleware/withAuth";
-import { withOptionalAuth } from "../../../../lib/middleware/withOptionalAuth";
 import prisma from "../../../../lib/prisma";
 import { sendUnauthorized, sendError } from "../../../../lib/responses";
-import { sessionOptions } from "../../../../lib/session";
 
-export default withIronSessionApiRoute(
-  withOptionalAuth(handler),
-  sessionOptions
-);
-
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { query, method } = req;
 
   if (!query.cragId) return res.status(400).send("invalid_id");
 
   switch (method) {
     case "DELETE":
-      if (req.session.error) return sendUnauthorized(res, req.session.error);
-
       // TODO: Check crag privileges
       try {
         await prisma.crag.delete({

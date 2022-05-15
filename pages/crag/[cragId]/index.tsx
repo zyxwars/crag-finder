@@ -1,17 +1,11 @@
-import axios from "axios";
-import { withIronSessionSsr } from "iron-session/next";
-import Image from "next/image";
+import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import ReactMarkdown from "react-markdown";
 import useSWR, { mutate, unstable_serialize } from "swr";
 import CragDetail from "../../../components/CragDetail";
-import CreateVisit from "../../../components/CreateVisit";
 import Visits from "../../../components/Visits";
-import { withAuthSsr } from "../../../lib/middleware/withAuthSsr";
 import prisma from "../../../lib/prisma";
-import { sessionOptions } from "../../../lib/session";
 
 const Crag = () => {
   const router = useRouter();
@@ -37,24 +31,22 @@ const Crag = () => {
   );
 };
 
-export const getServerSideProps = withIronSessionSsr(
-  async ({ req, params }) => {
-    const session = await withAuthSsr(req);
+export const getServerSideProps = async ({
+  req,
+  res,
+  params,
+}: GetServerSidePropsContext) => {
+  const crag = await prisma.crag.findUnique({
+    where: { id: Number(params?.cragId) },
+  });
 
-    const crag = await prisma.crag.findUnique({
-      where: { id: Number(params?.cragId) },
-    });
-
-    return {
-      props: {
-        session,
-        fallback: {
-          [unstable_serialize("/api/crag/" + Number(params?.cragId))]: crag,
-        },
+  return {
+    props: {
+      fallback: {
+        [unstable_serialize("/api/crag/" + Number(params?.cragId))]: crag,
       },
-    };
-  },
-  sessionOptions
-);
+    },
+  };
+};
 
 export default Crag;

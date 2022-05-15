@@ -1,7 +1,5 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
-import { withAuth } from "../../../lib/middleware/withAuth";
-import { sessionOptions } from "../../../lib/session";
 import { sendError } from "../../../lib/responses";
 import prisma from "../../../lib/prisma";
 import formidable, { File } from "formidable";
@@ -12,9 +10,8 @@ export const config = {
   },
 };
 
-export default withIronSessionApiRoute(withAuth(handler), sessionOptions);
-
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // TODO: Get user from session
   // TODO: Validate input
 
   const form = new formidable.IncomingForm({

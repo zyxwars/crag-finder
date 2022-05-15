@@ -25,7 +25,7 @@ const Register = () => {
     try {
       const res = await axios.post("/api/auth/register", data);
 
-      router.push("/auth/login");
+      await router.push("/auth/login");
     } catch (error) {
       console.log(error);
     }
@@ -58,12 +58,6 @@ const Register = () => {
   );
 };
 
-export const getServerSideProps = withIronSessionSsr(async ({ req, res }) => {
-  const session = await withAuthSsr(req);
-
-  if (session) redirectSsr(res, "/auth/logout?from=/auth/register");
-
-  return { props: { session } };
-}, sessionOptions);
+// TODO: Check already has session
 
 export default Register;

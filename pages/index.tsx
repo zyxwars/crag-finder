@@ -1,15 +1,14 @@
-import { withIronSessionSsr } from "iron-session/next";
 import type { NextPage } from "next";
 import Link from "next/link";
 import useSWR from "swr";
 import Crags from "../components/Crags";
-import { withAuthSsr } from "../lib/middleware/withAuthSsr";
 import prisma from "../lib/prisma";
-import { sessionOptions } from "../lib/session";
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 interface Props {
-  session: any;
-  fallback: any;
+  session: Session | null;
 }
 
 const Home: NextPage<Props> = ({ session }) => {
@@ -29,20 +28,22 @@ const Home: NextPage<Props> = ({ session }) => {
     </main>
   );
 };
-
-export const getServerSideProps = withIronSessionSsr(async ({ req }) => {
-  const session = await withAuthSsr(req);
-
+export const getServerSideProps = async ({
+  req,
+  res,
+  params,
+}: GetServerSidePropsContext) => {
+  const session = await getSession({ req });
   const crags = await prisma.crag.findMany();
 
   return {
     props: {
-      session: session,
+      session,
       fallback: {
         "/api/crag/recommended": crags,
       },
     },
   };
-}, sessionOptions);
+};
 
 export default Home;
