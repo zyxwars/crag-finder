@@ -46,13 +46,17 @@ Delete crag
 
 ### /crags/[cragId]/photos
 
-POST\
+POST
+Not implemented\
 GET
+Not implemented
 
 ### /crags/[cragId]/comments
 
-POST\
+POST
+Not implemented\
 GET
+Not implemented\
 
 ### /crag/[cragIc]/visits
 
