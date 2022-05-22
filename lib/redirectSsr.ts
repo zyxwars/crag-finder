@@ -7,7 +7,4 @@ export const redirectSsr = (
 ) => {
   res.writeHead(302, { Location: url });
   res.end();
-
-  // Return this in the main function
-  return { props: {} };
 };
