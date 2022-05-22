@@ -1,7 +1,12 @@
+import { Role } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "../../../lib/prisma";
-import { sendBadRequest, sendNoSession } from "../../../lib/responses";
+import prisma from "$lib/prisma";
+import {
+  sendBadRequest,
+  sendNoPermissions,
+  sendNoSession,
+} from "$lib/responses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,6 +16,7 @@ export default async function handler(
 
   switch (method) {
     case "PUT":
+      // TODO: Add put method
       break;
     case "DELETE":
       // Check session
@@ -19,15 +25,24 @@ export default async function handler(
 
       // Validate data
       const { cragId } = req.query;
+      if (!cragId) return sendBadRequest(res, "no_cragId");
 
-      // TODO: Get permissions for crag
+      // Get user role
+      const role = await prisma.cragRole.findFirst({
+        where: {
+          userId: session.user.id,
+          cragId: Number(cragId),
+        },
+      });
+      // Check if user is allowed to delete the crag
+      if (!(role?.role === Role.OWNER)) return sendNoPermissions(res);
 
       // Delete crag
       const crag = await prisma.crag.delete({ where: { id: Number(cragId) } });
-      res.status(200).send(crag);
-      break;
+
+      return res.status(200).send(crag);
     default:
       res.setHeader("Allow", ["PUT", "DELETE"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+      return res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

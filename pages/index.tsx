@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import useSWR from "swr";
-import Crags from "../lib/components/Crags";
-import prisma from "../lib/prisma";
+import Crags from "$components/Crags";
+import prisma from "$lib/prisma";
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
@@ -12,13 +12,13 @@ interface Props {
 }
 
 const Home: NextPage<Props> = ({ session }) => {
-  const { data, error } = useSWR("/api/crag/recommended");
+  const { data, error } = useSWR("/api/crags");
 
   return (
     <main>
       {session && (
         <>
-          <Link href="/crag/create">
+          <Link href="/crags/create">
             <a>Create a new crag</a>
           </Link>
         </>

@@ -3,9 +3,9 @@ import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { withAuthSsr } from "../../lib/middleware/withAuthSsr";
-import { redirectSsr } from "../../lib/redirectSsr";
-import { sessionOptions } from "../../lib/session";
+import { withAuthSsr } from "$lib/middleware/withAuthSsr";
+import { redirectSsr } from "$lib/redirectSsr";
+import { sessionOptions } from "$lib/session";
 
 type Inputs = {
   name: string;
@@ -34,7 +34,7 @@ const Register = () => {
     <div>
       <div>Register</div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+      <form onSubmit={handleSubmit(onSubmit)} className="">
         <input
           {...register("name", { required: true })}
           placeholder="Name..."

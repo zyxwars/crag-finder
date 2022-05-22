@@ -1,6 +1,6 @@
 import NextAuth, { User } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
-import prisma from "../../../lib/prisma";
+import prisma from "$lib/prisma";
 
 export default NextAuth({
   providers: [

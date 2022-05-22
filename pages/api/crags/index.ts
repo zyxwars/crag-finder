@@ -1,8 +1,8 @@
 import { Role } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "../../../lib/prisma";
-import { sendBadRequest, sendNoSession } from "../../../lib/responses";
+import prisma from "$lib/prisma";
+import { sendBadRequest, sendNoSession } from "$lib/responses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,9 +17,10 @@ export default async function handler(
       if (!session) return sendNoSession(res);
 
       // Validate data
-      const { name, content } = req.body;
+      const { name, content, tags } = req.body;
       if (!name) sendBadRequest(res, "no_name");
       if (!content) sendBadRequest(res, "no_content");
+      if (!tags) sendBadRequest(res, "no_tags");
 
       // Create crag and add owner role to creator
       // https://www.prisma.io/docs/concepts/components/prisma-client/transactions
@@ -28,6 +29,7 @@ export default async function handler(
           name,
           content,
           author: { connect: { id: session.user.id } },
+          tags,
           cragRoles: {
             create: [
               {

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "../../../../lib/prisma";
-import { sendBadRequest, sendNoSession } from "../../../../lib/responses";
+import prisma from "$lib/prisma";
+import { sendBadRequest, sendNoSession } from "$lib/responses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,14 +30,15 @@ export default async function handler(
           crag: { connect: { id: Number(cragId) } },
         },
       });
-      return res.status(201).send(comment);
 
+      return res.status(201).send(comment);
     default:
       // GET
       // Find comments
       const comments = await prisma.comment.findMany({
         where: { cragId: Number(cragId) },
       });
+
       return res.status(200).json(comments);
   }
 }

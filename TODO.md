@@ -1,45 +1,29 @@
 ### Current
 
 - [ ] Fix duplicate code between getStatic and api route - extract from api to universal file
-- [ ] Fix visit uploading only single file
 - [ ] Allow to upload only images and not files
 
 ### Back burner
 
-- [ ] // @ts-ignore req.session will always exist exist after passing withAuthorization middleware
-      author: { connect: { id: req.session.user.id } },
-- [ ] Fix the linting rules
-
 ### Road map
 
-- [ ] Chakra ui
+- [x] Chakra ui
 - [ ] withErrorHandling try catch wrapper - overall better error handling system
+- [ ] Crag create
+- [ ] Crag delete
+- [ ] Crag edit
+- [ ] Crag photos
+- [ ] Crag comments
+- [ ] Crag search, tags, location, distance from point
 
-# App state
+## Current state
 
-## User
+### API
 
-- [x] Sign In
-- [x] Sign Out
-- [ ] Register - [ ] Add password hashing
-- [ ] GET
-- [ ] PUT
-- [ ] DELETE
+Crags
 
-## Crag
+GET\
+POST\
+DELETE
 
-- [x] GET
-- [x] POST
-- [ ] PUT
-- [ ] DELETE - [ ] Check privileges
-
-### Comments
-
-- [ ]
-
-## Visit
-
-- [x] GET
-- [ ] POST - [ ] Multiple images - [ ] Allow only image type
-- [ ] PUT
-- [ ] DELETE - [ ] Check privileges
+### Frontend

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "../../../../lib/prisma";
-import { sendNoSession } from "../../../../lib/responses";
+import prisma from "$lib/prisma";
+import { sendNoSession } from "$lib/responses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,7 +19,6 @@ export default async function handler(
       return res.status(501).send("");
 
     default:
-      // TODO: Handle crag doesn't exist
       const { cragId } = req.query;
 
       // GET

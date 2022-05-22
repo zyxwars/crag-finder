@@ -1,3 +1,4 @@
+import { Box, Flex, LinkBox } from "@chakra-ui/react";
 import { Crag } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
@@ -15,13 +16,15 @@ const Crags = ({ data, error }: Props) => {
   if (!data) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col">
+    <Flex direction="column" align="center">
       {data.map((crag: Crag) => (
         <Link key={crag.id} href={"/crag/" + crag.id}>
-          <a>{crag.name}</a>
+          <LinkBox borderWidth="1px" borderRadius="lg" overflow="hidden">
+            {crag.name}
+          </LinkBox>
         </Link>
       ))}
-    </div>
+    </Flex>
   );
 };
 
