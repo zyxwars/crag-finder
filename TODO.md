@@ -2,6 +2,7 @@
 
 - [ ] Fix duplicate code between getStatic and api route - extract from api to universal file
 - [ ] Allow to upload only images and not files
+- [ ] Rename content, rename uploads to content
 
 ### Back burner
 

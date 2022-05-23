@@ -6,6 +6,7 @@ import prisma from "$lib/prisma";
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { Button } from "@chakra-ui/react";
 
 interface Props {
   session: Session | null;
@@ -19,7 +20,7 @@ const Home: NextPage<Props> = ({ session }) => {
       {session && (
         <>
           <Link href="/crags/create">
-            <a>Create a new crag</a>
+            <Button>Create a new crag</Button>
           </Link>
         </>
       )}
