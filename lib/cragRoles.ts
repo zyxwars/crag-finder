@@ -1,3 +1,5 @@
+import prisma from "./prisma";
+
 interface CragRolePermissions {
   [roleName: string]: {
     name?: boolean;
@@ -24,4 +26,21 @@ export const cragRoles: CragRolePermissions = {
     deleteComments: true,
   },
   OBSERVER: {},
+};
+
+export const getRole = async (cragId: number, userId: number) => {
+  const role = await prisma.cragRole.findFirst({
+    where: {
+      userId: userId,
+      cragId: cragId,
+    },
+  });
+
+  return role?.role;
+};
+
+export const getPermissions = async (cragId: number, userId: number) => {
+  const role = await getRole(cragId, userId);
+
+  return cragRoles[role || "OBSERVER"];
 };

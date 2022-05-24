@@ -7,6 +7,7 @@ import {
   sendNoPermissions,
   sendNoSession,
 } from "$lib/responses";
+import { getRole } from "$lib/cragRoles";
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,14 +29,9 @@ export default async function handler(
       if (!cragId) return sendBadRequest(res, "no_cragId");
 
       // Get user role
-      const role = await prisma.cragRole.findFirst({
-        where: {
-          userId: session.user.id,
-          cragId: Number(cragId),
-        },
-      });
+      const role = await getRole(Number(cragId), session.user.id);
       // Check if user is allowed to delete the crag
-      if (!(role?.role === Role.OWNER)) return sendNoPermissions(res);
+      if (!(role === Role.OWNER)) return sendNoPermissions(res);
 
       // Delete crag
       const crag = await prisma.crag.delete({ where: { id: Number(cragId) } });

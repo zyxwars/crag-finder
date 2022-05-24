@@ -36,7 +36,7 @@ const Crags = ({ data, error }: Props) => {
   return (
     <SimpleGrid minChildWidth="12rem" spacing="1rem">
       {data.map((crag: Crag) => (
-        <Link key={crag.id} href={"/crag/" + crag.id}>
+        <Link key={crag.id} href={"/crags/" + crag.id}>
           <LinkBox
             mb="4"
             maxW="sm"
