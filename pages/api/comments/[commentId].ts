@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "$lib/prisma";
@@ -8,9 +9,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req;
-
-  // TODO: Handle crag doesn't exist
-  const { cragId } = req.query;
+  const { commentId } = req.query;
 
   switch (method) {
     case "POST":
@@ -20,26 +19,27 @@ export default async function handler(
 
       // Validate data
       const { body } = req.body;
-      if (!body) return sendBadRequest(res, "no_body");
+      if (!body) sendBadRequest(res, "no_body");
 
-      // Create comment
-      const comment = await prisma.comment.create({
+      // Create reply
+      // TODO: Group replies without having to query every single one
+      const comment = await prisma.comment.update({
+        where: { id: Number(commentId) },
         data: {
-          body,
-          author: { connect: { id: session.user.id } },
-          crag: { connect: { id: Number(cragId) } },
+          replies: {
+            create: [
+              {
+                body,
+                author: { connect: { id: session.user.id } },
+              },
+            ],
+          },
         },
       });
 
       return res.status(201).json(comment);
     default:
-      // GET
-      // Find comments
-      const comments = await prisma.comment.findMany({
-        where: { cragId: Number(cragId) },
-        include: { author: true },
-      });
-
-      return res.status(200).json(comments);
+      res.setHeader("Allow", ["POST", "DELETE"]);
+      return res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

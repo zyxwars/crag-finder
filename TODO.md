@@ -1,29 +1,4 @@
-### Current
-
-- [ ] Allow to upload only images and not files
-- [ ] Rename content, rename uploads to content
-
-### Back burner
-
-### Road map
-
-- [x] Chakra ui
-- [ ] withErrorHandling try catch wrapper - overall better error handling system
-- [ ] Crag create
-- [ ] Crag delete
-- [ ] Crag edit
-- [ ] Crag photos
-- [ ] Crag comments
-- [ ] Crag search, tags, location, distance from point
-
-## Current state
-
-### API
-
-Crags
-
-GET\
-POST\
-DELETE
-
-### Frontend
+Add and hash passwords, check for password during login\
+Global error system for each axios request\
+Make app mvp without file uploads and add them after\
+Fix grid\

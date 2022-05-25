@@ -3,9 +3,15 @@ import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { withAuthSsr } from "$lib/middleware/withAuthSsr";
-import { redirectSsr } from "$lib/redirectSsr";
-import { sessionOptions } from "$lib/session";
+import {
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Textarea,
+} from "@chakra-ui/react";
 
 type Inputs = {
   name: string;
@@ -18,43 +24,61 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      const res = await axios.post("/api/auth/register", data);
+  const onSubmit = handleSubmit(async (data) => {
+    const res = await axios.post("/api/auth/register", data);
 
-      await router.push("/auth/login");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    await router.push("/api/auth/signin");
+  });
+
   return (
-    <div>
-      <div>Register</div>
+    <form onSubmit={onSubmit}>
+      <Flex direction="column" align="center">
+        <FormControl isInvalid={!!errors.name}>
+          <Input
+            placeholder="Name"
+            {...register("name", {
+              required: "This is required",
+            })}
+          />
+          <FormErrorMessage>
+            {errors.name && errors.name.message}
+          </FormErrorMessage>
+        </FormControl>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="">
-        <input
-          {...register("name", { required: true })}
-          placeholder="Name..."
-        />
-        {errors.name && <span>This field is required</span>}
-        <input
-          type="email"
-          {...register("email", { required: true })}
-          placeholder="Email..."
-        />
-        {errors.email && <span>This field is required</span>}
-        <input
-          type="password"
-          {...register("password", { required: true })}
-          placeholder="Password..."
-        />
-        {errors.password && <span>This field is required</span>}
-        <input type="submit" />
-      </form>
-    </div>
+        <FormControl isInvalid={!!errors.email}>
+          <Input
+            placeholder="Email"
+            type="email"
+            {...register("email", {
+              required: "This is required",
+            })}
+          />
+          <FormErrorMessage>
+            {errors.email && errors.email.message}
+          </FormErrorMessage>
+        </FormControl>
+
+        <FormControl isInvalid={!!errors.password}>
+          <Input
+            placeholder="Password"
+            type="password"
+            {...register("password", {
+              required: "This is required",
+            })}
+          />
+          <FormErrorMessage>
+            {errors.password && errors.password.message}
+          </FormErrorMessage>
+        </FormControl>
+
+        <Button isLoading={isSubmitting} type="submit">
+          Submit
+        </Button>
+      </Flex>
+    </form>
   );
 };
 

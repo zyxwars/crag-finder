@@ -29,6 +29,7 @@ const Home: NextPage<Props> = ({ session }) => {
     </main>
   );
 };
+
 export const getServerSideProps = async ({
   req,
   res,
@@ -41,7 +42,7 @@ export const getServerSideProps = async ({
     props: {
       session,
       fallback: {
-        "/api/crag/recommended": crags,
+        "/api/crags": crags,
       },
     },
   };

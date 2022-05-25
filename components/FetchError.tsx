@@ -5,7 +5,7 @@ interface Props {
   error: any;
 }
 
-const SWRError = ({ error }: Props) => {
+const FetchError = ({ error }: Props) => {
   return (
     <div>
       <div>{error?.message}</div>
@@ -14,4 +14,4 @@ const SWRError = ({ error }: Props) => {
   );
 };
 
-export default SWRError;
+export default FetchError;

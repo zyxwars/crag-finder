@@ -17,19 +17,17 @@ model User {
   password  String
   crags     Crag[]
   comments  Comment[]
-  photos    Photo[]
   cragRoles CragRole[]
 }
 
 model Crag {
   id        Int        @id @default(autoincrement())
   name      String
-  content   String
+  body      String
   tags      String
   author    User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  Int?
   comments  Comment[]
-  photos    Photo[]
   cragRoles CragRole[]
 }
 
@@ -50,7 +48,7 @@ model CragRole {
 
 model Comment {
   id       Int       @id @default(autoincrement())
-  content  String
+  body     String
   author   User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int?
   crag     Crag?     @relation(fields: [cragId], references: [id], onDelete: Cascade)
@@ -58,15 +56,4 @@ model Comment {
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   parentId Int?
   replies  Comment[] @relation("CommentReplies")
-}
-
-model Photo {
-  id       Int    @id @default(autoincrement())
-  name     String
-  path     String
-  size     Int
-  crag     Crag?  @relation(fields: [cragId], references: [id], onDelete: Cascade)
-  cragId   Int?
-  author   User?  @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId Int?
 }

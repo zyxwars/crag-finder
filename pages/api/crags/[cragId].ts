@@ -36,7 +36,7 @@ export default async function handler(
       // Delete crag
       const crag = await prisma.crag.delete({ where: { id: Number(cragId) } });
 
-      return res.status(200).send(crag);
+      return res.status(200).json(crag);
     default:
       res.setHeader("Allow", ["PUT", "DELETE"]);
       return res.status(405).end(`Method ${method} Not Allowed`);

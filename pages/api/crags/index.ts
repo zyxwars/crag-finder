@@ -17,9 +17,9 @@ export default async function handler(
       if (!session) return sendNoSession(res);
 
       // Validate data
-      const { name, content, tags } = req.body;
+      const { name, body, tags } = req.body;
       if (!name) sendBadRequest(res, "no_name");
-      if (!content) sendBadRequest(res, "no_content");
+      if (!body) sendBadRequest(res, "no_body");
       if (!tags) sendBadRequest(res, "no_tags");
 
       // Create crag and add owner role to creator
@@ -27,7 +27,7 @@ export default async function handler(
       const crag = await prisma.crag.create({
         data: {
           name,
-          content,
+          body,
           author: { connect: { id: session.user.id } },
           tags,
           cragRoles: {
