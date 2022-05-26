@@ -13,14 +13,21 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useRouter } from "next/router";
+import { useSWRConfig } from "swr";
 
 interface Props {
   comment: CommentWithAuthor;
+  comments: CommentWithAuthor[];
 }
 
-const Comment = ({ comment }: Props) => {
+const Comment = ({ comment, comments }: Props) => {
   const [showReply, setShowReply] = useState(false);
   const [reply, setReply] = useState("");
+
+  const { mutate } = useSWRConfig();
+  const router = useRouter();
+  const replies = comments.filter((reply) => reply.parentId === comment.id);
 
   return (
     <Box my="0.5rem">
@@ -48,10 +55,18 @@ const Comment = ({ comment }: Props) => {
             <Spacer />
             <ButtonGroup>
               <Button
-                onClick={() => {
-                  const res = axios.post("/api/comments/" + comment.id, {
+                onClick={async () => {
+                  const url =
+                    "/api/crags/" +
+                    router.query.cragId +
+                    "/comments/" +
+                    comment.id;
+
+                  const res = await axios.post(url, {
                     body: reply,
                   });
+
+                  await mutate(url);
                 }}
               >
                 Post
@@ -68,6 +83,12 @@ const Comment = ({ comment }: Props) => {
           </Flex>
         </>
       )}
+
+      <Box ml="2rem">
+        {replies.map((comment) => (
+          <Comment key={comment.id} comment={comment} comments={comments} />
+        ))}
+      </Box>
     </Box>
   );
 };

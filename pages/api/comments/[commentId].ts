@@ -12,34 +12,8 @@ export default async function handler(
   const { commentId } = req.query;
 
   switch (method) {
-    case "POST":
-      // Check session
-      const session = await getSession({ req });
-      if (!session) return sendNoSession(res);
-
-      // Validate data
-      const { body } = req.body;
-      if (!body) sendBadRequest(res, "no_body");
-
-      // Create reply
-      // TODO: Group replies without having to query every single one
-      const comment = await prisma.comment.update({
-        where: { id: Number(commentId) },
-        data: {
-          replies: {
-            create: [
-              {
-                body,
-                author: { connect: { id: session.user.id } },
-              },
-            ],
-          },
-        },
-      });
-
-      return res.status(201).json(comment);
     default:
-      res.setHeader("Allow", ["POST", "DELETE"]);
+      res.setHeader("Allow", ["DELETE"]);
       return res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

@@ -19,10 +19,12 @@ const Comments = ({ data, error }: Props) => {
       </Box>
     );
 
+  const rootComments = data.filter((comment) => comment.parentId === null);
+
   return (
     <Box>
-      {data.map((comment) => (
-        <Comment key={comment.id} comment={comment} />
+      {rootComments.map((comment) => (
+        <Comment key={comment.id} comment={comment} comments={data} />
       ))}
     </Box>
   );
