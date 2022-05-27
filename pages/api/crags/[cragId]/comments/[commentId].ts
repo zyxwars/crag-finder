@@ -10,15 +10,15 @@ export default async function handler(
 ) {
   const { method } = req;
   const { commentId, cragId } = req.query;
+  const session = await getSession({ req });
+  const { body } = req.body;
 
   switch (method) {
     case "POST":
       // Check session
-      const session = await getSession({ req });
       if (!session) return sendNoSession(res);
 
       // Validate data
-      const { body } = req.body;
       if (!body) sendBadRequest(res, "no_body");
 
       // Create reply
@@ -38,8 +38,26 @@ export default async function handler(
       });
 
       return res.status(201).json(comment);
+    case "DELETE":
+      // Check session
+      if (!session) return sendNoSession(res);
+
+      // TODO: Crag mod perms
+      // or user is author check
+
+      const deletedComment = await prisma.comment.update({
+        where: { id: Number(commentId) },
+        data: {
+          body: "",
+          author: {
+            disconnect: true,
+          },
+        },
+      });
+
+      return res.status(200).json(deletedComment);
     default:
-      res.setHeader("Allow", ["POST"]);
+      res.setHeader("Allow", ["POST", "DELETE"]);
       return res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

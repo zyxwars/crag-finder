@@ -53,7 +53,7 @@ model Comment {
   authorId Int?
   crag     Crag?     @relation(fields: [cragId], references: [id], onDelete: Cascade)
   cragId   Int?
-  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction)
   parentId Int?
   replies  Comment[] @relation("CommentReplies")
 }

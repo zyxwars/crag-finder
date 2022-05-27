@@ -26,7 +26,6 @@ export default async function handler(
 
       // Validate data
       const { cragId } = req.query;
-      if (!cragId) return sendBadRequest(res, "no_cragId");
 
       // Get user role
       const role = await getRole(Number(cragId), session.user.id);

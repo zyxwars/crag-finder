@@ -3,7 +3,7 @@ import React from "react";
 import { createContext } from "react";
 import { CommentWithAuthor } from "types/utils";
 import Comment from "./Comment";
-import FetchError from "./FetchError";
+import FetchError from "../FetchError";
 
 interface Props {
   data: CommentWithAuthor[];

@@ -5,8 +5,8 @@ import { Crag } from "@prisma/client";
 import { Box, Flex, Heading, Tag } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import { useSession } from "next-auth/react";
-import CreateComment from "$components/CreateComment";
-import Comments from "$components/Comments";
+import CreateComment from "$components/Comments/CreateComment";
+import Comments from "$components/Comments/Comments";
 import useSWR, { useSWRConfig } from "swr";
 import axios from "axios";
 

@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { useSWRConfig } from "swr";
 import { CragContext } from "pages/crags/[cragId]";
 import { CommentsContext } from "./Comments";
+import { useSession } from "next-auth/react";
 
 interface Props {
   comment: CommentWithAuthor;
@@ -26,6 +27,7 @@ const Comment = ({ comment }: Props) => {
   const crag = useContext(CragContext);
   const comments = useContext(CommentsContext);
   const { mutate } = useSWRConfig();
+  const { data: session, status } = useSession();
 
   const [showReply, setShowReply] = useState(false);
   const [reply, setReply] = useState("");
@@ -39,16 +41,27 @@ const Comment = ({ comment }: Props) => {
 
   return (
     <Box my="0.5rem">
-      <Text fontSize="sm">{comment.author.name}</Text>
+      <Text fontSize="sm">{comment?.author?.name || "Deleted"}</Text>
       <Flex align="center">
-        <Text>{comment.body}</Text>
+        <Text>{comment?.author ? comment.body : "[deleted]"}</Text>
         <Spacer />
-        {!showReply && (
+        {!showReply && status === "authenticated" && comment?.author && (
           <Button onClick={() => setShowReply(true)}>Reply</Button>
+        )}
+        {session?.user.id === comment.authorId && (
+          <Button
+            onClick={async () => {
+              const url = "/api/crags/" + crag.id + "/comments";
+              const res = await axios.delete(url + "/" + comment.id);
+              await mutate(url);
+            }}
+          >
+            Delete
+          </Button>
         )}
       </Flex>
 
-      {showReply && (
+      {showReply && comment?.author && (
         <>
           <InputGroup>
             <InputLeftAddon>@{comment.author.name}</InputLeftAddon>
@@ -64,14 +77,11 @@ const Comment = ({ comment }: Props) => {
             <ButtonGroup>
               <Button
                 onClick={async () => {
-                  const url =
-                    "/api/crags/" + crag.id + "/comments/" + comment.id;
-
-                  const res = await axios.post(url, {
+                  const url = "/api/crags/" + crag.id + "/comments";
+                  const res = await axios.post(url + "/" + comment.id, {
                     body: reply,
                   });
-
-                  await mutate("/api/crags/" + crag.id + "/comments");
+                  await mutate(url);
                   handleCancelReply();
                 }}
               >
