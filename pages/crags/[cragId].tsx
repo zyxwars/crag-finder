@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext } from "react";
 import { GetServerSidePropsContext } from "next";
 import prisma from "$lib/prisma";
 import { Crag } from "@prisma/client";
@@ -14,6 +14,9 @@ interface Props {
   crag: Crag;
 }
 
+// TODO: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/24509#issuecomment-382213106
+export const CragContext = createContext<Crag>();
+
 const Crag = ({ crag }: Props) => {
   const { data: session, status } = useSession();
   const { data: comments, error: commentsError } = useSWR(
@@ -22,31 +25,34 @@ const Crag = ({ crag }: Props) => {
   const { mutate } = useSWRConfig();
 
   return (
-    <Flex direction="column" align="center">
-      <Heading>{crag.name}</Heading>
-      <Box>
-        <ReactMarkdown>{crag.body}</ReactMarkdown>
-      </Box>
+    <CragContext.Provider value={crag}>
+      <Flex direction="column" align="center">
+        <Heading>{crag.name}</Heading>
+        <Box>
+          <ReactMarkdown>{crag.body}</ReactMarkdown>
+        </Box>
 
-      <Box>
-        {crag.tags.split(",").map((tag, i) => (
-          <Tag key={i}>{tag}</Tag>
-        ))}
-      </Box>
+        <Box>
+          {crag.tags.split(",").map((tag, i) => (
+            <Tag key={i}>{tag}</Tag>
+          ))}
+        </Box>
 
-      <Heading>Comments</Heading>
-      {status === "authenticated" && (
-        <CreateComment
-          onPost={async (data) => {
-            const url = "/api/crags/" + crag.id + "/comments";
-            const res = await axios.post(url, { body: data });
+        <Heading>Comments</Heading>
 
-            await mutate(url);
-          }}
-        />
-      )}
-      <Comments data={comments} error={commentsError} />
-    </Flex>
+        {status === "authenticated" && (
+          <CreateComment
+            onPost={async (data) => {
+              const url = "/api/crags/" + crag.id + "/comments";
+              const res = await axios.post(url, { body: data });
+
+              await mutate(url);
+            }}
+          />
+        )}
+        <Comments data={comments} error={commentsError} />
+      </Flex>
+    </CragContext.Provider>
   );
 };
 

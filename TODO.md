@@ -1,4 +1,4 @@
-- Use zustand for state management
+- Fix context default value, todo in comments
 - Add comment deleting
 - Add and hash passwords, check for password during login
 - Global error system for each axios request
@@ -7,4 +7,3 @@
 ### Fix
 
 - Fix grid
-- Fix comment chain mutate not working

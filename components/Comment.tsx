@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useContext } from "react";
 import { CommentWithAuthor } from "types/utils";
 import {
   Text,
@@ -15,19 +15,27 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSWRConfig } from "swr";
+import { CragContext } from "pages/crags/[cragId]";
+import { CommentsContext } from "./Comments";
 
 interface Props {
   comment: CommentWithAuthor;
-  comments: CommentWithAuthor[];
 }
 
-const Comment = ({ comment, comments }: Props) => {
+const Comment = ({ comment }: Props) => {
+  const crag = useContext(CragContext);
+  const comments = useContext(CommentsContext);
+  const { mutate } = useSWRConfig();
+
   const [showReply, setShowReply] = useState(false);
   const [reply, setReply] = useState("");
 
-  const { mutate } = useSWRConfig();
-  const router = useRouter();
   const replies = comments.filter((reply) => reply.parentId === comment.id);
+
+  const handleCancelReply = () => {
+    setShowReply(false);
+    setReply("");
+  };
 
   return (
     <Box my="0.5rem">
@@ -57,28 +65,19 @@ const Comment = ({ comment, comments }: Props) => {
               <Button
                 onClick={async () => {
                   const url =
-                    "/api/crags/" +
-                    router.query.cragId +
-                    "/comments/" +
-                    comment.id;
+                    "/api/crags/" + crag.id + "/comments/" + comment.id;
 
                   const res = await axios.post(url, {
                     body: reply,
                   });
 
-                  await mutate(url);
+                  await mutate("/api/crags/" + crag.id + "/comments");
+                  handleCancelReply();
                 }}
               >
                 Post
               </Button>
-              <Button
-                onClick={() => {
-                  setShowReply(false);
-                  setReply("");
-                }}
-              >
-                Cancel
-              </Button>
+              <Button onClick={handleCancelReply}>Cancel</Button>
             </ButtonGroup>
           </Flex>
         </>
@@ -86,7 +85,7 @@ const Comment = ({ comment, comments }: Props) => {
 
       <Box ml="2rem">
         {replies.map((comment) => (
-          <Comment key={comment.id} comment={comment} comments={comments} />
+          <Comment key={comment.id} comment={comment} />
         ))}
       </Box>
     </Box>
