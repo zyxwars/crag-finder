@@ -27,6 +27,8 @@ const CreateComment = ({ onPost }: Props) => {
       <Button
         onClick={() => {
           onPost(comment);
+
+          setComment("");
         }}
       >
         Post

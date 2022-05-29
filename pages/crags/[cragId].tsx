@@ -9,13 +9,11 @@ import CreateComment from "$components/Comments/CreateComment";
 import Comments from "$components/Comments/Comments";
 import useSWR, { useSWRConfig } from "swr";
 import axios from "axios";
+import { CragContext } from "store";
 
 interface Props {
   crag: Crag;
 }
-
-// TODO: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/24509#issuecomment-382213106
-export const CragContext = createContext<Crag>();
 
 const Crag = ({ crag }: Props) => {
   const { data: session, status } = useSession();

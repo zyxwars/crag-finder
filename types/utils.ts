@@ -1,5 +1,10 @@
-import { Comment, User } from "@prisma/client";
+import { CragPermissions } from "$lib/cragRoles";
+import { Comment, Crag, User } from "@prisma/client";
 
 export type CommentWithAuthor = Comment & {
-  author?: User;
+  author: User;
+};
+
+export type CragWithPermissions = Crag & {
+  permissions?: CragPermissions;
 };

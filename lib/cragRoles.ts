@@ -1,17 +1,19 @@
 import prisma from "./prisma";
 
-interface CragRolePermissions {
-  [roleName: string]: {
-    name?: boolean;
-    content?: boolean;
-    tags?: boolean;
-    postPhotos?: boolean;
-    deletePhotos?: boolean;
-    deleteComments?: boolean;
-  };
+export interface CragPermissions {
+  name?: boolean;
+  content?: boolean;
+  tags?: boolean;
+  postPhotos?: boolean;
+  deletePhotos?: boolean;
+  deleteComments?: boolean;
 }
 
-export const cragRoles: CragRolePermissions = {
+interface RolePermissions {
+  [roleName: string]: CragPermissions;
+}
+
+export const cragRoles: RolePermissions = {
   OWNER: {
     name: true,
     content: true,

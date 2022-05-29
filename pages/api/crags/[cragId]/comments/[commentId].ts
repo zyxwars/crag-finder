@@ -45,14 +45,8 @@ export default async function handler(
       // TODO: Crag mod perms
       // or user is author check
 
-      const deletedComment = await prisma.comment.update({
+      const deletedComment = await prisma.comment.delete({
         where: { id: Number(commentId) },
-        data: {
-          body: "",
-          author: {
-            disconnect: true,
-          },
-        },
       });
 
       return res.status(200).json(deletedComment);

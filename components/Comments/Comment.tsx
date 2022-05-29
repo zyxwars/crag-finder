@@ -15,9 +15,9 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSWRConfig } from "swr";
-import { CragContext } from "pages/crags/[cragId]";
 import { CommentsContext } from "./Comments";
 import { useSession } from "next-auth/react";
+import { CragContext } from "store";
 
 interface Props {
   comment: CommentWithAuthor;
@@ -41,14 +41,17 @@ const Comment = ({ comment }: Props) => {
 
   return (
     <Box my="0.5rem">
-      <Text fontSize="sm">{comment?.author?.name || "Deleted"}</Text>
+      <Text fontSize="sm">{comment.author.name}</Text>
       <Flex align="center">
-        <Text>{comment?.author ? comment.body : "[deleted]"}</Text>
+        <Text>{comment.body}</Text>
         <Spacer />
-        {!showReply && status === "authenticated" && comment?.author && (
-          <Button onClick={() => setShowReply(true)}>Reply</Button>
-        )}
-        {session?.user.id === comment.authorId && (
+        {!showReply &&
+          status === "authenticated" &&
+          !crag?.permissions?.deleteComments && (
+            <Button onClick={() => setShowReply(true)}>Reply</Button>
+          )}
+        {(session?.user.id === comment.authorId ||
+          crag?.permissions?.deleteComments) && (
           <Button
             onClick={async () => {
               const url = "/api/crags/" + crag.id + "/comments";
@@ -61,7 +64,7 @@ const Comment = ({ comment }: Props) => {
         )}
       </Flex>
 
-      {showReply && comment?.author && (
+      {showReply && (
         <>
           <InputGroup>
             <InputLeftAddon>@{comment.author.name}</InputLeftAddon>
