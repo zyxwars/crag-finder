@@ -2,7 +2,7 @@ import prisma from "./prisma";
 
 export interface CragPermissions {
   name?: boolean;
-  content?: boolean;
+  body?: boolean;
   tags?: boolean;
   postPhotos?: boolean;
   deletePhotos?: boolean;
@@ -16,7 +16,7 @@ interface RolePermissions {
 export const cragRoles: RolePermissions = {
   OWNER: {
     name: true,
-    content: true,
+    body: true,
     tags: true,
     postPhotos: true,
     deletePhotos: true,
