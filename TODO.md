@@ -1,8 +1,8 @@
 ### Add
 
 - Add crag edit, delete
+- Live refresh edit with swr
 - Add delete confirm modal
-- Add header
 - Add and hash passwords, check for password during login
 - Add global error system for each axios request
 

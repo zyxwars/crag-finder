@@ -4,6 +4,7 @@ import { SWRConfig } from "swr";
 import axios from "axios";
 import { SessionProvider } from "next-auth/react";
 import { ChakraProvider } from "@chakra-ui/react";
+import Layout from "$components/Layout";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,7 +16,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             fallback: pageProps?.fallback,
           }}
         >
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </SWRConfig>
       </SessionProvider>
     </ChakraProvider>

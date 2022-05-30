@@ -26,6 +26,7 @@ import Comments from "$components/Comments/Comments";
 import { CragWithPermissions } from "types/utils";
 import { CragContext } from "store";
 import { FaCheck, FaTimes, FaPen } from "react-icons/fa";
+import axios from "axios";
 
 interface Props {
   crag: CragWithPermissions;
@@ -60,7 +61,13 @@ const Page = ({ crag }: Props) => {
   return (
     <CragContext.Provider value={crag}>
       <Text>Name</Text>
-      <Editable defaultValue={crag.name} isDisabled={!crag?.permissions?.name}>
+      <Editable
+        defaultValue={crag.name}
+        isDisabled={!crag?.permissions?.name}
+        onChange={async (data) => {
+          console.log(data);
+        }}
+      >
         <EditablePreview />
         <EditableInput />
         <EditableControls />
