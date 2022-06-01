@@ -1,8 +1,10 @@
 ### Add
 
-- Add delete confirm modal
-- Add and hash passwords, check for password during login
 - Add global error system for each axios request
+- More defensive programming for input validation, error handling
+- Polish and go to image upload
+  - Add and hash passwords, check for password during login
+  - Add delete confirm modal
 
 ### Fix
 
