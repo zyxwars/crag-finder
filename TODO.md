@@ -5,6 +5,7 @@
 - Polish and go to image upload
   - Add and hash passwords, check for password during login
   - Add delete confirm modal
+  - Add animations, chakra, react spring
 
 ### Fix
 
