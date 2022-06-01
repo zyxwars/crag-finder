@@ -12,12 +12,13 @@ import {
   useEditableControls,
   Heading,
   Text,
+  Button,
 } from "@chakra-ui/react";
 import prisma from "$lib/prisma";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import React, { createContext } from "react";
-import useSWR from "swr";
+import useSWR, { mutate, unstable_serialize, useSWRConfig } from "swr";
 import { Crag } from "@prisma/client";
 import { getSession } from "next-auth/react";
 import { CragPermissions, getPermissions } from "$lib/cragRoles";
@@ -27,10 +28,6 @@ import { CragWithPermissions } from "types/utils";
 import { CragContext } from "store";
 import { FaCheck, FaTimes, FaPen } from "react-icons/fa";
 import axios from "axios";
-
-interface Props {
-  crag: CragWithPermissions;
-}
 
 function EditableControls() {
   const {
@@ -42,30 +39,70 @@ function EditableControls() {
 
   return isEditing ? (
     <ButtonGroup justifyContent="center" size="sm">
-      <IconButton icon={<FaCheck />} {...getSubmitButtonProps()} />
-      <IconButton icon={<FaTimes />} {...getCancelButtonProps()} />
+      <IconButton
+        aria-label="Submit"
+        icon={<FaCheck />}
+        {...getSubmitButtonProps()}
+      />
+      <IconButton
+        aria-label="cancel"
+        icon={<FaTimes />}
+        {...getCancelButtonProps()}
+      />
     </ButtonGroup>
   ) : (
     <Flex justifyContent="center">
-      <IconButton size="sm" icon={<FaPen />} {...getEditButtonProps()} />
+      <IconButton
+        aria-label="edit"
+        size="sm"
+        icon={<FaPen />}
+        {...getEditButtonProps()}
+      />
     </Flex>
   );
 }
 
-const Page = ({ crag }: Props) => {
+const Page = () => {
   const router = useRouter();
   const { data: comments, error: commentsError } = useSWR(
-    "/api/crags/" + crag.id + "/comments"
+    "/api/crags/" + router.query.cragId + "/comments"
   );
+
+  const url = "/api/crags/" + router.query.cragId;
+  const { data: crag, error: cragError } = useSWR(
+    "/api/crags/" + router.query.cragId
+  );
+  const { mutate } = useSWRConfig();
+
+  if (cragError) return <FetchError error={cragError} />;
+
+  if (!crag)
+    return (
+      <Box>
+        <Spinner />
+      </Box>
+    );
 
   return (
     <CragContext.Provider value={crag}>
+      <Button
+        isDisabled={!crag.permissions.deleteCrag}
+        onClick={async () => {
+          const res = await axios.delete(url);
+
+          await router.push("/");
+        }}
+      >
+        Delete crag
+      </Button>
+
       <Text>Name</Text>
       <Editable
         defaultValue={crag.name}
         isDisabled={!crag?.permissions?.name}
-        onChange={async (data) => {
-          console.log(data);
+        onSubmit={async (data: string) => {
+          const res = await axios.put(url, { name: data });
+          await mutate(url);
         }}
       >
         <EditablePreview />
@@ -74,14 +111,28 @@ const Page = ({ crag }: Props) => {
       </Editable>
 
       <Text>Body</Text>
-      <Editable defaultValue={crag.body} isDisabled={!crag?.permissions?.body}>
+      <Editable
+        defaultValue={crag.body}
+        isDisabled={!crag?.permissions?.body}
+        onSubmit={async (data: string) => {
+          const res = await axios.put(url, { body: data });
+          await mutate(url);
+        }}
+      >
         <EditablePreview />
         <EditableTextarea />
         <EditableControls />
       </Editable>
 
       <Text>Tags</Text>
-      <Editable defaultValue={crag.tags} isDisabled={!crag?.permissions?.tags}>
+      <Editable
+        defaultValue={crag.tags}
+        isDisabled={!crag?.permissions?.tags}
+        onSubmit={async (data: string) => {
+          const res = await axios.put(url, { tags: data });
+          await mutate(url);
+        }}
+      >
         <EditablePreview />
         <EditableInput />
         <EditableControls />
@@ -114,10 +165,10 @@ export const getServerSideProps = async ({
 
   const permissions = await getPermissions(Number(cragId), session.user.id);
 
+  // TODO: Add to callback
   return {
     props: {
       fallback: {},
-      crag: { ...crag, permissions },
     },
   };
 };

@@ -7,6 +7,7 @@ export interface CragPermissions {
   postPhotos?: boolean;
   deletePhotos?: boolean;
   deleteComments?: boolean;
+  deleteCrag?: boolean;
 }
 
 interface RolePermissions {
@@ -21,6 +22,7 @@ export const cragRoles: RolePermissions = {
     postPhotos: true,
     deletePhotos: true,
     deleteComments: true,
+    deleteCrag: true,
   },
   MODERATOR: {
     postPhotos: true,

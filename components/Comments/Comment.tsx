@@ -21,9 +21,10 @@ import { CragContext } from "store";
 
 interface Props {
   comment: CommentWithAuthor;
+  canDelete: boolean;
 }
 
-const Comment = ({ comment }: Props) => {
+const Comment = ({ comment, canDelete }: Props) => {
   const crag = useContext(CragContext);
   const comments = useContext(CommentsContext);
   const { mutate } = useSWRConfig();
@@ -45,13 +46,10 @@ const Comment = ({ comment }: Props) => {
       <Flex align="center">
         <Text>{comment.body}</Text>
         <Spacer />
-        {!showReply &&
-          status === "authenticated" &&
-          !crag?.permissions?.deleteComments && (
-            <Button onClick={() => setShowReply(true)}>Reply</Button>
-          )}
-        {(session?.user.id === comment.authorId ||
-          crag?.permissions?.deleteComments) && (
+        {!showReply && status === "authenticated" && !canDelete && (
+          <Button onClick={() => setShowReply(true)}>Reply</Button>
+        )}
+        {(session?.user.id === comment.authorId || canDelete) && (
           <Button
             onClick={async () => {
               const url = "/api/crags/" + crag.id + "/comments";
@@ -98,7 +96,7 @@ const Comment = ({ comment }: Props) => {
 
       <Box ml="2rem">
         {replies.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
+          <Comment key={comment.id} comment={comment} canDelete={canDelete} />
         ))}
       </Box>
     </Box>
