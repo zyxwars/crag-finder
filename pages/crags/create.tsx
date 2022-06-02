@@ -55,12 +55,17 @@ const Page = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <Textarea
-            placeholder="Crag content (markdown)"
-            {...register("body", {
-              required: "This is required",
-            })}
-          />
+          <FormControl isInvalid={!!errors.body}>
+            <Textarea
+              placeholder="Crag content (markdown)"
+              {...register("body", {
+                required: "This is required",
+              })}
+            />
+            <FormErrorMessage>
+              {errors.body && errors.body.message}
+            </FormErrorMessage>
+          </FormControl>
 
           <FormControl isInvalid={!!errors.name}>
             <Input

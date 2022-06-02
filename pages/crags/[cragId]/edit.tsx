@@ -10,15 +10,15 @@ import {
   IconButton,
   Spinner,
   useEditableControls,
-  Heading,
   Text,
   Button,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import prisma from "$lib/prisma";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
-import React, { createContext } from "react";
+import React, { createContext, useState } from "react";
 import useSWR, { mutate, unstable_serialize, useSWRConfig } from "swr";
 import { Crag } from "@prisma/client";
 import { getSession } from "next-auth/react";
@@ -30,6 +30,7 @@ import { CragContext } from "store";
 import { FaCheck, FaTimes, FaPen } from "react-icons/fa";
 import axios from "axios";
 import { fetchError } from "$lib/toastOptions";
+import DeleteCragDialog from "$components/Modals/DeleteCragDialog";
 
 function EditableControls() {
   const {
@@ -76,6 +77,9 @@ const Page = () => {
   );
   const { mutate } = useSWRConfig();
   const toast = useToast();
+  const { isOpen, onClose, onOpen } = useDisclosure({
+    defaultIsOpen: false,
+  });
 
   if (cragError) return <FetchError error={cragError} />;
 
@@ -88,21 +92,9 @@ const Page = () => {
 
   return (
     <CragContext.Provider value={crag}>
-      <Button
-        isDisabled={!crag.permissions.deleteCrag}
-        onClick={async () => {
-          try {
-            const res = await axios.delete(url);
+      <DeleteCragDialog crag={crag} isOpen={isOpen} onClose={onClose} />
 
-            await router.push("/");
-          } catch (error) {
-            toast({
-              ...fetchError,
-              description: error?.response.data || error?.message,
-            });
-          }
-        }}
-      >
+      <Button isDisabled={!crag.permissions.deleteCrag} onClick={onOpen}>
         Delete crag
       </Button>
 
@@ -194,7 +186,7 @@ export const getServerSideProps = async ({
     };
   }
 
-  const permissions = await getPermissions(Number(cragId), session.user.id);
+  // const permissions = await getPermissions(Number(cragId), session.user.id);
 
   // TODO: Add to callback
   return {

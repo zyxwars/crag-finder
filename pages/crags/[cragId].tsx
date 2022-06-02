@@ -19,7 +19,7 @@ import axios from "axios";
 import { CragContext } from "store";
 import { CragWithPermissions } from "types/utils";
 import { getPermissions } from "$lib/cragRoles";
-import { FaCog } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
 import Link from "next/link";
 import { fetchError } from "$lib/toastOptions";
 
@@ -38,15 +38,17 @@ const Page = ({ crag }: Props) => {
   return (
     <CragContext.Provider value={crag}>
       <Flex direction="column" align="center">
-        {crag?.permissions && (
-          <Link href={"/crags/" + crag.id + "/edit"}>
-            <IconButton aria-label="edit">
-              <FaCog />
-            </IconButton>
-          </Link>
-        )}
+        <Flex>
+          <Heading>{crag.name}</Heading>
+          {crag?.permissions && (
+            <Link href={"/crags/" + crag.id + "/edit"}>
+              <IconButton aria-label="edit">
+                <FaPen />
+              </IconButton>
+            </Link>
+          )}
+        </Flex>
 
-        <Heading>{crag.name}</Heading>
         <Box>
           <ReactMarkdown>{crag.body}</ReactMarkdown>
         </Box>
