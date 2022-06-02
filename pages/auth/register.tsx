@@ -11,7 +11,9 @@ import {
   FormLabel,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
+import { fetchError } from "$lib/toastOptions";
 
 type Inputs = {
   name: string;
@@ -21,6 +23,8 @@ type Inputs = {
 
 const Register = () => {
   const router = useRouter();
+  const toast = useToast();
+
   const {
     register,
     handleSubmit,
@@ -28,9 +32,16 @@ const Register = () => {
   } = useForm<Inputs>();
 
   const onSubmit = handleSubmit(async (data) => {
-    const res = await axios.post("/api/auth/register", data);
+    try {
+      const res = await axios.post("/api/auth/register", data);
 
-    await router.push("/api/auth/signin");
+      await router.push("/api/auth/signin");
+    } catch (error) {
+      toast({
+        ...fetchError,
+        description: error?.response.data || error?.message,
+      });
+    }
   });
 
   return (

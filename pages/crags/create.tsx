@@ -1,3 +1,4 @@
+import { fetchError } from "$lib/toastOptions";
 import {
   Button,
   Flex,
@@ -6,9 +7,10 @@ import {
   FormLabel,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { Crag } from "@prisma/client";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -17,6 +19,7 @@ type Inputs = Omit<Crag, "authorId" | "id">;
 
 const Page = () => {
   const router = useRouter();
+  const toast = useToast();
 
   const {
     register,
@@ -24,9 +27,16 @@ const Page = () => {
     formState: { errors, isSubmitting },
   } = useForm<Inputs>();
   const onSubmit = handleSubmit(async (data) => {
-    const res = await axios.post("/api/crags", data);
+    try {
+      const res = await axios.post("/api/crags", data);
 
-    await router.push("/crags/" + res.data.id);
+      await router.push("/crags/" + res.data.id);
+    } catch (error) {
+      toast({
+        ...fetchError,
+        description: error?.response.data || error?.message,
+      });
+    }
   });
 
   return (
@@ -47,7 +57,9 @@ const Page = () => {
 
           <Textarea
             placeholder="Crag content (markdown)"
-            {...register("body")}
+            {...register("body", {
+              required: "This is required",
+            })}
           />
 
           <FormControl isInvalid={!!errors.name}>

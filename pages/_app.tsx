@@ -5,6 +5,7 @@ import axios from "axios";
 import { SessionProvider } from "next-auth/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "$components/Layout";
+import { createContext } from "react";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

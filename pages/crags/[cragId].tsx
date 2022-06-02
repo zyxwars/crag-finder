@@ -2,7 +2,14 @@ import React, { createContext } from "react";
 import { GetServerSidePropsContext } from "next";
 import prisma from "$lib/prisma";
 import { Crag } from "@prisma/client";
-import { Box, Flex, Heading, IconButton, Tag } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  IconButton,
+  Tag,
+  useToast,
+} from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import { getSession, useSession } from "next-auth/react";
 import CreateComment from "$components/Comments/CreateComment";
@@ -14,12 +21,14 @@ import { CragWithPermissions } from "types/utils";
 import { getPermissions } from "$lib/cragRoles";
 import { FaCog } from "react-icons/fa";
 import Link from "next/link";
+import { fetchError } from "$lib/toastOptions";
 
 interface Props {
   crag: CragWithPermissions;
 }
 
 const Page = ({ crag }: Props) => {
+  const toast = useToast();
   const { data: session, status } = useSession();
   const { data: comments, error: commentsError } = useSWR(
     "/api/crags/" + crag.id + "/comments"
@@ -53,10 +62,17 @@ const Page = ({ crag }: Props) => {
         {status === "authenticated" && (
           <CreateComment
             onPost={async (data) => {
-              const url = "/api/crags/" + crag.id + "/comments";
-              const res = await axios.post(url, { body: data });
+              try {
+                const url = "/api/crags/" + crag.id + "/comments";
+                const res = await axios.post(url, { body: data });
 
-              await mutate(url);
+                await mutate(url);
+              } catch (error) {
+                toast({
+                  ...fetchError,
+                  description: error?.response.data || error?.message,
+                });
+              }
             }}
           />
         )}

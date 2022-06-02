@@ -19,7 +19,7 @@ export default async function handler(
       if (!session) return sendNoSession(res);
 
       // Validate data
-      if (!body) sendBadRequest(res, "no_body");
+      if (!body) return sendBadRequest(res, "no_body");
 
       // Create reply
       const comment = await prisma.comment.update({

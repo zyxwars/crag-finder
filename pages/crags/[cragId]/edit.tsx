@@ -13,6 +13,7 @@ import {
   Heading,
   Text,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import prisma from "$lib/prisma";
 import { GetServerSidePropsContext } from "next";
@@ -28,6 +29,7 @@ import { CragWithPermissions } from "types/utils";
 import { CragContext } from "store";
 import { FaCheck, FaTimes, FaPen } from "react-icons/fa";
 import axios from "axios";
+import { fetchError } from "$lib/toastOptions";
 
 function EditableControls() {
   const {
@@ -73,6 +75,7 @@ const Page = () => {
     "/api/crags/" + router.query.cragId
   );
   const { mutate } = useSWRConfig();
+  const toast = useToast();
 
   if (cragError) return <FetchError error={cragError} />;
 
@@ -88,9 +91,16 @@ const Page = () => {
       <Button
         isDisabled={!crag.permissions.deleteCrag}
         onClick={async () => {
-          const res = await axios.delete(url);
+          try {
+            const res = await axios.delete(url);
 
-          await router.push("/");
+            await router.push("/");
+          } catch (error) {
+            toast({
+              ...fetchError,
+              description: error?.response.data || error?.message,
+            });
+          }
         }}
       >
         Delete crag
@@ -101,8 +111,15 @@ const Page = () => {
         defaultValue={crag.name}
         isDisabled={!crag?.permissions?.name}
         onSubmit={async (data: string) => {
-          const res = await axios.put(url, { name: data });
-          await mutate(url);
+          try {
+            const res = await axios.put(url, { name: data });
+            await mutate(url);
+          } catch (error) {
+            toast({
+              ...fetchError,
+              description: error?.response.data || error?.message,
+            });
+          }
         }}
       >
         <EditablePreview />
@@ -115,8 +132,15 @@ const Page = () => {
         defaultValue={crag.body}
         isDisabled={!crag?.permissions?.body}
         onSubmit={async (data: string) => {
-          const res = await axios.put(url, { body: data });
-          await mutate(url);
+          try {
+            const res = await axios.put(url, { body: data });
+            await mutate(url);
+          } catch (error) {
+            toast({
+              ...fetchError,
+              description: error?.response.data || error?.message,
+            });
+          }
         }}
       >
         <EditablePreview />
@@ -129,8 +153,15 @@ const Page = () => {
         defaultValue={crag.tags}
         isDisabled={!crag?.permissions?.tags}
         onSubmit={async (data: string) => {
-          const res = await axios.put(url, { tags: data });
-          await mutate(url);
+          try {
+            const res = await axios.put(url, { tags: data });
+            await mutate(url);
+          } catch (error) {
+            toast({
+              ...fetchError,
+              description: error?.response.data || error?.message,
+            });
+          }
         }}
       >
         <EditablePreview />

@@ -1,6 +1,5 @@
 ### Add
 
-- Add global error system for each axios request
 - More defensive programming for input validation, error handling
 - Polish and go to image upload
   - Add delete confirm modal

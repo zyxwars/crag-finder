@@ -18,9 +18,9 @@ export default async function handler(
 
       // Validate data
       const { name, body, tags } = req.body;
-      if (!name) sendBadRequest(res, "no_name");
-      if (!body) sendBadRequest(res, "no_body");
-      if (!tags) sendBadRequest(res, "no_tags");
+      if (!name) return sendBadRequest(res, "no_name");
+      if (!body) return sendBadRequest(res, "no_body");
+      if (!tags) return sendBadRequest(res, "no_tags");
 
       // Create crag and add owner role to creator
       // https://www.prisma.io/docs/concepts/components/prisma-client/transactions
