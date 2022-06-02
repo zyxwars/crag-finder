@@ -1,4 +1,5 @@
 import NextAuth, { User } from "next-auth";
+import bcrypt from "bcrypt";
 import CredentialProvider from "next-auth/providers/credentials";
 import prisma from "$lib/prisma";
 
@@ -14,12 +15,16 @@ export default NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        // TODO: Add password
         const user = await prisma.user.findUnique({
           where: { email: credentials?.email },
         });
 
-        return user;
+        if (
+          bcrypt.compareSync(credentials?.password || "", user?.password || "")
+        )
+          return user;
+
+        return null;
       },
     }),
   ],
