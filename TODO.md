@@ -2,13 +2,16 @@
 
 - More defensive programming for input validation, error handling
 - Polish and go to image upload
-  - Add animations, chakra, react spring
+
   - Make custom login and logout routes
+
+- Add animations, chakra, react spring
 
 ### Fix
 
-- Fix context default value, todo in comments
 - Fix grid
+- Fix react markdown
+- Fix context default value, todo in comments
 - Fix dynamic swr callback
 
 ### General

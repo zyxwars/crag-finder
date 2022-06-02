@@ -13,6 +13,7 @@ import {
   Text,
   Button,
   useToast,
+  Heading,
   useDisclosure,
 } from "@chakra-ui/react";
 import prisma from "$lib/prisma";
@@ -98,7 +99,6 @@ const Page = () => {
         Delete crag
       </Button>
 
-      <Text>Name</Text>
       <Editable
         defaultValue={crag.name}
         isDisabled={!crag?.permissions?.name}
@@ -114,7 +114,7 @@ const Page = () => {
           }
         }}
       >
-        <EditablePreview />
+        <Heading as={EditablePreview} />
         <EditableInput />
         <EditableControls />
       </Editable>

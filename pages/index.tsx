@@ -7,6 +7,7 @@ import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { Button } from "@chakra-ui/react";
+import ReactMarkdown from "react-markdown";
 
 interface Props {
   session: Session | null;
