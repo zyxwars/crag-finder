@@ -22,6 +22,7 @@ import { getPermissions } from "$lib/cragRoles";
 import { FaPen } from "react-icons/fa";
 import Link from "next/link";
 import { fetchError } from "$lib/toastOptions";
+import ChakraUIRenderer from "$lib/markdownRenderer";
 
 interface Props {
   crag: CragWithPermissions;
@@ -50,7 +51,9 @@ const Page = ({ crag }: Props) => {
         </Flex>
 
         <Box>
-          <ReactMarkdown>{crag.body}</ReactMarkdown>
+          <ReactMarkdown components={ChakraUIRenderer()} skipHtml>
+            {crag.body}
+          </ReactMarkdown>
         </Box>
 
         <Box>

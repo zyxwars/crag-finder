@@ -11,7 +11,7 @@ export interface CragPermissions {
 }
 
 interface RolePermissions {
-  [roleName: string]: CragPermissions;
+  [roleName: string]: CragPermissions | null;
 }
 
 export const cragRoles: RolePermissions = {
@@ -29,7 +29,7 @@ export const cragRoles: RolePermissions = {
     deletePhotos: true,
     deleteComments: true,
   },
-  OBSERVER: {},
+  OBSERVER: null,
 };
 
 export const getRole = async (cragId: number, userId: number) => {
