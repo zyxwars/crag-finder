@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   useDisclosure,
+  IconButton,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -27,6 +28,7 @@ import { CommentsContext } from "./Comments";
 import { useSession } from "next-auth/react";
 import { CragContext } from "store";
 import { fetchError } from "$lib/toastOptions";
+import { FaReply, FaTrash } from "react-icons/fa";
 
 interface Props {
   comment: CommentWithAuthor;
@@ -103,10 +105,17 @@ const Comment = ({ comment, canDelete }: Props) => {
           <Text>{comment.body}</Text>
           <Spacer />
           {!showReply && status === "authenticated" && (
-            <Button onClick={() => setShowReply(true)}>Reply</Button>
+            <IconButton
+              aria-label="reply to comment"
+              onClick={() => setShowReply(true)}
+            >
+              <FaReply />
+            </IconButton>
           )}
           {(session?.user.id === comment.authorId || canDelete) && (
-            <Button onClick={onOpen}>Delete</Button>
+            <IconButton aria-label="delete comment" onClick={onOpen}>
+              <FaTrash />
+            </IconButton>
           )}
         </Flex>
 

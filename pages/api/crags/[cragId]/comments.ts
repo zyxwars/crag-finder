@@ -37,7 +37,7 @@ export default async function handler(
       // Find comments
       const comments = await prisma.comment.findMany({
         where: { cragId: Number(cragId) },
-        include: { author: true },
+        include: { author: { select: { id: true, name: true } } },
       });
 
       return res.status(200).json(comments);

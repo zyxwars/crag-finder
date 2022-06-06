@@ -13,6 +13,11 @@ const nextConfig = {
         destination: "/api/auth/signout",
         permanent: true,
       },
+      {
+        source: "/crags",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 };

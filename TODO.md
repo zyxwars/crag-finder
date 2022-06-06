@@ -1,14 +1,20 @@
 ### Add
 
-- More defensive programming for input validation, error handling
+- Fix only last file uploading
+- Add user to visit Cascade
 
+- Add user profile
+- Add profile edit page
 - Add animations, chakra, react spring
+- Server side error handling
 
 ### Fix
 
 - Fix grid
 - Fix context default value, todo in comments
 - Fix dynamic swr callback
+- Fix post empty comment, use hook form
+- Check api endpoints leaking db fields like password to public
 
 ### General
 

@@ -4,6 +4,7 @@ import prisma from "$lib/prisma";
 import { Crag } from "@prisma/client";
 import {
   Box,
+  Button,
   Flex,
   Heading,
   IconButton,
@@ -23,6 +24,8 @@ import { FaPen } from "react-icons/fa";
 import Link from "next/link";
 import { fetchError } from "$lib/toastOptions";
 import ChakraUIRenderer from "$lib/markdownRenderer";
+import { useDropzone } from "react-dropzone";
+import Visits from "$components/Visits/Visits";
 
 interface Props {
   crag: CragWithPermissions;
@@ -34,7 +37,20 @@ const Page = ({ crag }: Props) => {
   const { data: comments, error: commentsError } = useSWR(
     "/api/crags/" + crag.id + "/comments"
   );
+  const { data: visits, error: visitsError } = useSWR(
+    "/api/crags/" + crag.id + "/visits"
+  );
   const { mutate } = useSWRConfig();
+
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: { "image/*": [] },
+  });
+
+  const files = acceptedFiles.map((file) => (
+    <li key={file.name}>
+      {file.name} - {file.size} bytes
+    </li>
+  ));
 
   return (
     <CragContext.Provider value={crag}>
@@ -51,7 +67,7 @@ const Page = ({ crag }: Props) => {
         </Flex>
 
         <Box>
-          <ReactMarkdown components={ChakraUIRenderer()} skipHtml>
+          <ReactMarkdown components={ChakraUIRenderer()}>
             {crag.body}
           </ReactMarkdown>
         </Box>
@@ -62,8 +78,44 @@ const Page = ({ crag }: Props) => {
           ))}
         </Box>
 
-        <Heading>Comments</Heading>
+        <Heading>Visits</Heading>
+        {status === "authenticated" && (
+          <>
+            <Box {...getRootProps({ className: "dropzone" })}>
+              <input {...getInputProps()} />
+              <p>Drag 'n' drop some files here, or click to select files</p>
+            </Box>
+            <Box>
+              <h4>Files</h4>
+              <ul>{files}</ul>
+            </Box>
+            <Button
+              onClick={async () => {
+                const formData = new FormData();
+                acceptedFiles.forEach((file) =>
+                  formData.append("photos", file)
+                );
 
+                try {
+                  const url = "/api/crags/" + crag.id + "/visits";
+                  const res = await axios.post(url, formData);
+
+                  // TODO: mutate
+                } catch (error) {
+                  toast({
+                    ...fetchError,
+                    description: error?.response.data || error?.message,
+                  });
+                }
+              }}
+            >
+              Post
+            </Button>
+          </>
+        )}
+        <Visits data={visits} error={visitsError} />
+
+        <Heading>Comments</Heading>
         {status === "authenticated" && (
           <CreateComment
             onPost={async (data) => {

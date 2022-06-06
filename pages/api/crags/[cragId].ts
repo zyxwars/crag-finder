@@ -37,9 +37,9 @@ export default async function handler(
       // Parse body and validate based on permissions
       const { name, body, tags } = req.body;
       const allowedChanges = {
-        name: permissions.name && name,
-        body: permissions.body && body,
-        tags: permissions.tags && tags,
+        name: permissions?.name && name,
+        body: permissions?.body && body,
+        tags: permissions?.tags && tags,
       };
 
       // Update crag
@@ -59,7 +59,7 @@ export default async function handler(
       // Get user role
       const permissions = await getPermissions(Number(cragId), session.user.id);
       // Check if user is allowed to delete the crag
-      if (!permissions.deleteCrag) return sendNoPermissions(res);
+      if (!permissions?.deleteCrag) return sendNoPermissions(res);
 
       // Delete crag
       const crag = await prisma.crag.delete({ where: { id: Number(cragId) } });

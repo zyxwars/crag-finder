@@ -95,7 +95,7 @@ const Page = () => {
     <CragContext.Provider value={crag}>
       <DeleteCragDialog crag={crag} isOpen={isOpen} onClose={onClose} />
 
-      <Button isDisabled={!crag.permissions.deleteCrag} onClick={onOpen}>
+      <Button isDisabled={!crag.permissions?.deleteCrag} onClick={onOpen}>
         Delete crag
       </Button>
 

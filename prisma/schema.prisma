@@ -18,6 +18,7 @@ model User {
   crags     Crag[]
   comments  Comment[]
   cragRoles CragRole[]
+  visits    Visit[]
 }
 
 model Crag {
@@ -29,6 +30,7 @@ model Crag {
   authorId  Int?
   comments  Comment[]
   cragRoles CragRole[]
+  visits    Visit[]
 }
 
 enum Role {
@@ -56,4 +58,21 @@ model Comment {
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId Int?
   replies  Comment[] @relation("CommentReplies")
+}
+
+model Visit {
+  id       Int     @id @default(autoincrement())
+  crag     Crag?   @relation(fields: [cragId], references: [id], onDelete: Cascade)
+  cragId   Int?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int?
+  photos   Photo[]
+}
+
+model Photo {
+  id               Int    @id @default(autoincrement())
+  newFilename      String
+  originalFilename String
+  Visit            Visit? @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visitId          Int?
 }
