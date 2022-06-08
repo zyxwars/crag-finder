@@ -19,8 +19,6 @@ const Visits = ({ data, error }: Props) => {
       </Box>
     );
 
-  console.log(data);
-
   return (
     <Box>
       {data.map((visit) => (

@@ -1,8 +1,7 @@
 ### Add
 
-- Fix only last file uploading
+- Clean up crag page, separate to components
 - Add user to visit Cascade
-
 - Add user profile
 - Add profile edit page
 - Add animations, chakra, react spring
@@ -15,6 +14,7 @@
 - Fix dynamic swr callback
 - Fix post empty comment, use hook form
 - Check api endpoints leaking db fields like password to public
+- Fix formidable endpoint without response
 
 ### General
 

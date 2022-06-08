@@ -8,6 +8,7 @@ import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { Button } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
+import { useState } from "react";
 
 interface Props {
   session: Session | null;

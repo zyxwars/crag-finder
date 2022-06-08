@@ -27,18 +27,24 @@ export default async function handler(
       if (!session) return sendNoSession(res);
 
       // Validate data
-      const form = new formidable.IncomingForm();
-      form.uploadDir = process.env.UPLOAD_DIR;
-      form.keepExtensions = true;
+      const form = formidable({
+        uploadDir: process.env.UPLOAD_DIR,
+        keepExtensions: true,
+        // This is important to access all files in the callback
+        multiples: true,
+        filter: function ({ name, originalFilename, mimetype }) {
+          // keep only images
+          return !!(mimetype && mimetype.includes("image"));
+        },
+      });
+
       await form.parse(req, async (err, fields, files) => {
         // Extract photos
         let photos = [];
         if (Array.isArray(files.photos)) photos = files.photos;
         else photos = [files.photos];
 
-        console.log(files.photos);
-
-        //Create visit
+        // Create visit
         const visit = await prisma.visit.create({
           data: {
             photos: {
