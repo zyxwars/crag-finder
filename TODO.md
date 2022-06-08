@@ -1,6 +1,5 @@
 ### Add
 
-- Clean up crag page, separate to components
 - Add user to visit Cascade
 - Add user profile
 - Add profile edit page

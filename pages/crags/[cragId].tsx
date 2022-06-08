@@ -26,6 +26,7 @@ import { fetchError } from "$lib/toastOptions";
 import ChakraUIRenderer from "$lib/markdownRenderer";
 import { useDropzone } from "react-dropzone";
 import Visits from "$components/Visits/Visits";
+import CreateVisit from "$components/Visits/CreateVisit";
 
 interface Props {
   crag: CragWithPermissions;
@@ -41,17 +42,6 @@ const Page = ({ crag }: Props) => {
     "/api/crags/" + crag.id + "/visits"
   );
   const { mutate } = useSWRConfig();
-
-  const [photosToUpload, setPhotosToUpload] = useState<File[]>([]);
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setPhotosToUpload([...acceptedFiles]);
-  }, []);
-
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    accept: { "image/*": [] },
-    onDrop,
-  });
 
   return (
     <CragContext.Provider value={crag}>
@@ -80,62 +70,7 @@ const Page = ({ crag }: Props) => {
         </Box>
 
         <Heading>Visits</Heading>
-        {status === "authenticated" && (
-          <Flex
-            justify="center"
-            align="center"
-            direction="column"
-            bg="blackAlpha.300"
-          >
-            <Box {...getRootProps({ className: "dropzone" })}>
-              <input {...getInputProps()} />
-              <p>Drag 'n' drop some files here, or click to select files</p>
-            </Box>
-            <Box>
-              <h4>Files to upload</h4>
-              <ul>
-                {photosToUpload.map((file, i) => (
-                  <li key={file.name + i}>
-                    {file.name} - {file.size} bytes
-                    <IconButton
-                      aria-label="remove"
-                      onClick={() => {
-                        setPhotosToUpload((photosToUpload) =>
-                          photosToUpload.filter((photo) => photo !== file)
-                        );
-                      }}
-                    >
-                      <FaTimes />
-                    </IconButton>
-                  </li>
-                ))}
-              </ul>
-            </Box>
-            <Button
-              onClick={async () => {
-                const formData = new FormData();
-                photosToUpload.forEach((photo) =>
-                  formData.append("photos", photo)
-                );
-
-                try {
-                  const url = "/api/crags/" + crag.id + "/visits";
-                  const res = await axios.post(url, formData);
-
-                  await mutate(url);
-                  setPhotosToUpload([]);
-                } catch (error) {
-                  toast({
-                    ...fetchError,
-                    description: error?.response.data || error?.message,
-                  });
-                }
-              }}
-            >
-              Post
-            </Button>
-          </Flex>
-        )}
+        {status === "authenticated" && <CreateVisit />}
         <Visits data={visits} error={visitsError} />
 
         <Heading>Comments</Heading>
