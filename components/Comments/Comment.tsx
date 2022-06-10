@@ -29,6 +29,7 @@ import { useSession } from "next-auth/react";
 import { CragContext } from "store";
 import { fetchError } from "$lib/toastOptions";
 import { FaReply, FaTrash } from "react-icons/fa";
+import SimpleDeleteDialog from "$components/Modals/SimpleDeleteDialog";
 
 interface Props {
   comment: CommentWithAuthor;
@@ -53,51 +54,32 @@ const Comment = ({ comment, canDelete }: Props) => {
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
-      <AlertDialog
+      <SimpleDeleteDialog
         isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
         onClose={onClose}
+        onSubmit={async () => {
+          try {
+            const url = "/api/crags/" + crag.id + "/comments";
+            const res = await axios.delete(url + "/" + comment.id);
+            await mutate(url);
+          } catch (error: any) {
+            toast({
+              ...fetchError,
+              description: error?.response.data || error?.message,
+            });
+          }
+
+          onClose();
+        }}
       >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Comment
-            </AlertDialogHeader>
-
-            <AlertDialogBody>Are you sure?</AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={async () => {
-                  try {
-                    const url = "/api/crags/" + crag.id + "/comments";
-                    const res = await axios.delete(url + "/" + comment.id);
-                    await mutate(url);
-                  } catch (error) {
-                    toast({
-                      ...fetchError,
-                      description: error?.response.data || error?.message,
-                    });
-                  }
-
-                  onClose();
-                }}
-                ml={3}
-              >
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+          Delete Comment
+        </AlertDialogHeader>
+        <AlertDialogBody>Are you sure?</AlertDialogBody>
+      </SimpleDeleteDialog>
 
       <Box my="0.5rem">
         <Text fontSize="sm">{comment.author.name}</Text>
@@ -142,7 +124,7 @@ const Comment = ({ comment, canDelete }: Props) => {
                       });
                       await mutate(url);
                       handleCancelReply();
-                    } catch (error) {
+                    } catch (error: any) {
                       toast({
                         ...fetchError,
                         description: error?.response.data || error?.message,

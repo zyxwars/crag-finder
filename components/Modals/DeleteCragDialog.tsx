@@ -54,7 +54,7 @@ const DeleteCragDialog = ({
       const res = await axios.delete("/api/crags/" + router.query.cragId);
 
       await router.push("/");
-    } catch (error) {
+    } catch (error: any) {
       toast({
         ...fetchError,
         description: error?.response.data || error?.message,
@@ -62,7 +62,7 @@ const DeleteCragDialog = ({
     }
   });
 
-  const cancelRef = useRef<HTMLDivElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
   return (
     <AlertDialog
       isOpen={isOpen}

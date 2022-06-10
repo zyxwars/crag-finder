@@ -1,8 +1,12 @@
 import FetchError from "$components/FetchError";
-import { Box, Spinner, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Spinner, Text } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
+import { FaTrash } from "react-icons/fa";
+import { CragContext } from "store";
 import { VisitWithAuthorPhotos } from "types/utils";
+import Visit from "./Visit";
 
 interface Props {
   data: VisitWithAuthorPhotos[];
@@ -22,18 +26,7 @@ const Visits = ({ data, error }: Props) => {
   return (
     <Box>
       {data.map((visit) => (
-        <Box key={visit.id}>
-          <Text>{visit.author.name}</Text>
-          {visit.photos.map((photo) => (
-            <Image
-              key={photo.id}
-              src={"/api/uploads/" + photo.newFilename}
-              alt={photo.originalFilename}
-              width={100}
-              height={100}
-            />
-          ))}
-        </Box>
+        <Visit key={visit.id} visit={visit} />
       ))}
     </Box>
   );

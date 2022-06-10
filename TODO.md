@@ -4,7 +4,7 @@
 - Add user profile
 - Add profile edit page
 - Add animations, chakra, react spring
-- Server side error handling
+- Allow user with permissions to delete comments without /edit page
 
 ### Fix
 
@@ -15,10 +15,10 @@
 - Check api endpoints leaking db fields like password to public
 - Fix formidable endpoint without response
 
-### General
+### Long-term
 
-- Make app mvp without file uploads and add them after
-
-### After image upload
-
+- Delete images when the related record is deleted
+- Server side error handling
+- Check user permissions serverside
 - Add comment avatars
+- Merge edit with normal page and conditionally display edit options
