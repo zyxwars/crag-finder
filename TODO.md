@@ -5,12 +5,12 @@
 - Add profile edit page
 - Add animations, chakra, react spring
 - Allow user with permissions to delete comments without /edit page
+- Toggle comment replies
 
 ### Fix
 
 - Fix grid
 - Fix context default value, todo in comments
-- Fix dynamic swr callback
 - Fix post empty comment, use hook form
 - Check api endpoints leaking db fields like password to public
 - Fix formidable endpoint without response

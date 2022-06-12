@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, useContext, useRef } from "react";
-import { CommentWithAuthor } from "types/utils";
+import { Author, CommentWithAuthor } from "types/utils";
 import {
   Text,
   Box,
@@ -33,10 +33,11 @@ import SimpleDeleteDialog from "$components/Modals/SimpleDeleteDialog";
 
 interface Props {
   comment: CommentWithAuthor;
+  parentAuthor?: Author;
   canDelete: boolean;
 }
 
-const Comment = ({ comment, canDelete }: Props) => {
+const Comment = ({ comment, parentAuthor, canDelete }: Props) => {
   const crag = useContext(CragContext);
   const comments = useContext(CommentsContext);
   const toast = useToast();
@@ -84,6 +85,11 @@ const Comment = ({ comment, canDelete }: Props) => {
       <Box my="0.5rem">
         <Text fontSize="sm">{comment.author.name}</Text>
         <Flex align="center">
+          {parentAuthor && (
+            <Text mr="0.5rem" fontWeight="bold">
+              @{parentAuthor.name}
+            </Text>
+          )}
           <Text>{comment.body}</Text>
           <Spacer />
           {!showReply && status === "authenticated" && (
@@ -139,13 +145,29 @@ const Comment = ({ comment, canDelete }: Props) => {
             </Flex>
           </>
         )}
+      </Box>
 
+      {comment.parentId ? (
+        replies.map((reply) => (
+          <Comment
+            key={reply.id}
+            comment={reply}
+            parentAuthor={comment.parentId ? comment.author : undefined}
+            canDelete={canDelete}
+          />
+        ))
+      ) : (
         <Box ml="2rem">
-          {replies.map((comment) => (
-            <Comment key={comment.id} comment={comment} canDelete={canDelete} />
+          {replies.map((reply) => (
+            <Comment
+              key={reply.id}
+              comment={reply}
+              parentAuthor={comment.parentId ? comment.author : undefined}
+              canDelete={canDelete}
+            />
           ))}
         </Box>
-      </Box>
+      )}
     </>
   );
 };
