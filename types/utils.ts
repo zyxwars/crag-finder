@@ -1,14 +1,16 @@
 import { CragPermissions } from "$lib/cragRoles";
-import { Comment, Crag, Photo, User, Visit } from "@prisma/client";
+import { Comment, Crag, Photo, Visit } from "@prisma/client";
 
 // User stripped of private fields
-export type Author = {
+export type PublicUser = {
   id: number;
   name: string;
 };
 
+export type Author = PublicUser;
+
 export type CommentWithAuthor = Comment & {
-  author: User;
+  author: Author;
 };
 
 export type CragWithPermissions = Crag & {

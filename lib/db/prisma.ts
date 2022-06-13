@@ -17,4 +17,15 @@ if (process.env.NODE_ENV === "production") {
   }
   prisma = global.prisma;
 }
+
+// prisma.$use(async (params, next) => {
+//   console.log(params);
+
+//   return next(params);
+// });
+
+prisma.$on("query", (e) => {
+  console.log(e);
+});
+
 export default prisma;

@@ -16,7 +16,7 @@ import {
   Heading,
   useDisclosure,
 } from "@chakra-ui/react";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import React, { createContext, useState } from "react";

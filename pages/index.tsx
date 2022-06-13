@@ -2,13 +2,14 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import useSWR from "swr";
 import Crags from "$components/Crags";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { Button } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
+import { getAllCrags } from "$lib/db/queries";
 
 interface Props {
   session: Session | null;
@@ -38,7 +39,7 @@ export const getServerSideProps = async ({
   params,
 }: GetServerSidePropsContext) => {
   const session = await getSession({ req });
-  const crags = await prisma.crag.findMany();
+  const crags = await getAllCrags();
 
   return {
     props: {

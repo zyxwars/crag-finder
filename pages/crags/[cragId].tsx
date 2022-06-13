@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useState } from "react";
 import { GetServerSidePropsContext } from "next";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { Crag } from "@prisma/client";
 import {
   Box,
@@ -27,6 +27,7 @@ import ChakraUIRenderer from "$lib/markdownRenderer";
 import { useDropzone } from "react-dropzone";
 import Visits from "$components/Visits/Visits";
 import CreateVisit from "$components/Visits/CreateVisit";
+import { getCragWithPermissions } from "$lib/db/queries";
 
 interface Props {
   crag: CragWithPermissions;
@@ -105,7 +106,7 @@ export const getServerSideProps = async ({
   const { cragId } = query;
   const session = await getSession({ req });
 
-  const crag = await prisma.crag.findUnique({ where: { id: Number(cragId) } });
+  const crag = await getCragWithPermissions(Number(cragId), session);
 
   if (!crag) {
     return {
@@ -113,13 +114,10 @@ export const getServerSideProps = async ({
     };
   }
 
-  // TODO: This will probably error out if user has no perms
-  const permissions = await getPermissions(Number(cragId), session.user.id);
-
   return {
     props: {
       fallback: {},
-      crag: { ...crag, permissions },
+      crag,
     },
   };
 };

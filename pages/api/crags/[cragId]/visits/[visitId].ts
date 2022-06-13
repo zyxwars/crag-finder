@@ -1,7 +1,7 @@
 import { Role } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { sendBadRequest, sendNoSession } from "$lib/responses";
 
 export default async function handler(

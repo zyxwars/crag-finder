@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { sendBadRequest } from "$lib/responses";
 
 export default async function handler(

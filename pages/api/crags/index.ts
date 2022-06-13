@@ -1,8 +1,9 @@
 import { Role } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { sendBadRequest, sendNoSession } from "$lib/responses";
+import { getAllCrags } from "$lib/db/queries";
 
 export default async function handler(
   req: NextApiRequest,
@@ -45,7 +46,7 @@ export default async function handler(
     default:
       // GET
       // Find crags
-      const crags = await prisma.crag.findMany();
+      const crags = await getAllCrags();
       return res.status(200).json(crags);
   }
 }

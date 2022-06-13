@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { sendBadRequest, sendNoSession } from "$lib/responses";
 import formidable, { File, Files } from "formidable";
 import { Visit } from "@prisma/client";
+import { publicUserSelector } from "$lib/db/selectors";
 
 export const config = {
   api: {
@@ -67,7 +68,7 @@ export default async function handler(
       // Find comments
       const visits = await prisma.visit.findMany({
         where: { cragId: Number(cragId) },
-        include: { author: { select: { id: true, name: true } }, photos: true },
+        include: { author: { select: publicUserSelector }, photos: true },
       });
 
       return res.status(200).json(visits);

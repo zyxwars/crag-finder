@@ -1,13 +1,14 @@
 import { Role } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import {
   sendBadRequest,
   sendNoPermissions,
   sendNoSession,
 } from "$lib/responses";
 import { getPermissions, getRole } from "$lib/cragRoles";
+import { getCragWithPermissions } from "$lib/db/queries";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,13 +20,9 @@ export default async function handler(
 
   switch (method) {
     case "GET": {
-      const crag = await prisma.crag.findUnique({
-        where: { id: Number(cragId) },
-      });
+      const crag = await getCragWithPermissions(Number(cragId), session);
 
-      const permissions = await getPermissions(Number(cragId), session.user.id);
-
-      return res.status(200).json({ ...crag, permissions });
+      return res.status(200).json(crag);
     }
     case "PUT": {
       // Check session

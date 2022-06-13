@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import prisma from "$lib/prisma";
+import prisma from "$lib/db/prisma";
 import { sendBadRequest, sendNoSession } from "$lib/responses";
+import { publicUserSelector } from "$lib/db/selectors";
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,7 +38,7 @@ export default async function handler(
       // Find comments
       const comments = await prisma.comment.findMany({
         where: { cragId: Number(cragId) },
-        include: { author: { select: { id: true, name: true } } },
+        include: { author: { select: publicUserSelector } },
       });
 
       return res.status(200).json(comments);

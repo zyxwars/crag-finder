@@ -1,4 +1,4 @@
-import prisma from "./prisma";
+import prisma from "./db/prisma";
 
 export interface CragPermissions {
   name?: boolean;
