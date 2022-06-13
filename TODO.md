@@ -1,9 +1,9 @@
 ### Add
 
-- Add profile edit page
+- Refactor to use query and selector files
+- Check permission and redirect to login before allowing edit page access, send data to client > allow access to certain data based on permissions
 - Allow user with permissions to delete comments without /edit page
 - Toggle comment replies
-- Refactor to use query and selector files
 
 ### Fix
 
@@ -19,5 +19,8 @@
 - Server side error handling
 - Check user permissions serverside
 - Add comment avatars
-- Merge edit with normal page and conditionally display edit options
 - Add animations, chakra, react spring
+
+### Maybe
+
+- Merge edit with normal page and conditionally display edit options

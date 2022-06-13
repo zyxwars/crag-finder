@@ -1,6 +1,6 @@
 import { getPermissions } from "$lib/cragRoles";
 import prisma from "$lib/db/prisma";
-import { publicUserSelector } from "$lib/db/selectors";
+import { publicUserSelector, userSelector } from "$lib/db/selectors";
 import { Session } from "next-auth";
 
 export const getPublicUser = async (userId: number) =>
@@ -8,6 +8,21 @@ export const getPublicUser = async (userId: number) =>
     where: { id: userId },
     select: publicUserSelector,
   });
+
+export const getPrivateUser = async (
+  userId: number,
+  session: Session | null
+) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: userSelector,
+  });
+
+  // User is not authorized to this information
+  if (user?.id !== session?.user.id) return null;
+
+  return user;
+};
 
 export const getAllCrags = async () => await prisma.crag.findMany();
 

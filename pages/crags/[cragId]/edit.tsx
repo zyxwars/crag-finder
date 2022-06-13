@@ -32,6 +32,7 @@ import { FaCheck, FaTimes, FaPen } from "react-icons/fa";
 import axios from "axios";
 import { fetchError } from "$lib/toastOptions";
 import DeleteCragDialog from "$components/Modals/DeleteCragDialog";
+import { getCragWithPermissions } from "$lib/db/queries";
 
 function EditableControls() {
   const {
@@ -175,10 +176,9 @@ export const getServerSideProps = async ({
 }: GetServerSidePropsContext) => {
   const { cragId } = query;
   const session = await getSession({ req });
-
   if (!session) return redirectSsr(res, "/api/auth/signin");
 
-  const crag = await prisma.crag.findUnique({ where: { id: Number(cragId) } });
+  const crag = await getCragWithPermissions(Number(cragId), session);
 
   if (!crag) {
     return {
@@ -186,12 +186,11 @@ export const getServerSideProps = async ({
     };
   }
 
-  // const permissions = await getPermissions(Number(cragId), session.user.id);
-
-  // TODO: Add to callback
   return {
     props: {
-      fallback: {},
+      fallback: {
+        ["/api/crags/" + crag.id]: crag,
+      },
     },
   };
 };
