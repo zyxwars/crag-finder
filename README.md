@@ -13,8 +13,10 @@ NEXTAUTH_URL=https://example.com
 
 ### Setup database
 
-Clear db and apply all migrations
-
 ```
+// Clear db and apply all migrations
 npx prisma migrate reset
+
+// Apply migrations
+npx prisma migrate dev
 ```

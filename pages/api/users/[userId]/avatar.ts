@@ -28,6 +28,7 @@ export default async function handler(
   const { method } = req;
   const { userId } = req.query;
   const session = await getSession({ req });
+  // TODO: Add back the error handling stuff
   let isReturned = false;
 
   switch (method) {
@@ -40,6 +41,7 @@ export default async function handler(
       const form = formidable({
         uploadDir: process.env.UPLOAD_DIR,
         keepExtensions: true,
+        maxFiles: 1,
         filter: function ({ name, originalFilename, mimetype }) {
           // keep only images
           return !!(mimetype && mimetype.includes("image"));
@@ -47,39 +49,30 @@ export default async function handler(
       });
 
       form.parse(req, async (err, fields, files) => {
+        const avatar = files.avatar as File;
+
+        // TODO: if this crashes there could be more old avatars
         try {
-          const avatar = files.avatar as File;
-
-          // TODO: if this crashes there could be more old avatars
-          try {
-            const oldPhoto = await prisma.photo.delete({
-              where: { userId: session.user.id },
-            });
-            rmSync(process.env.UPLOAD_DIR + "/" + oldPhoto.newFilename);
-          } catch (error) {
-            //TODO: might just not exist
-            console.log(error);
-          }
-
-          const photo = await prisma.photo.create({
-            data: {
-              newFilename: avatar.newFilename,
-              originalFilename:
-                avatar.originalFilename || session.user.name + "'s avatar",
-              user: { connect: { id: session.user.id } },
-            },
+          const oldPhoto = await prisma.photo.delete({
+            where: { userId: session.user.id },
           });
-
-          isReturned = true;
-          return res.status(200).json(photo);
+          rmSync(process.env.UPLOAD_DIR + "/" + oldPhoto.newFilename);
         } catch (error) {
+          //TODO: might just not exist
           console.log(error);
-          isReturned = true;
-          return sendError(res);
         }
-      });
 
-      if (!isReturned) sendError(res);
+        const photo = await prisma.photo.create({
+          data: {
+            newFilename: avatar.newFilename,
+            originalFilename:
+              avatar.originalFilename || session.user.name + "'s avatar",
+            user: { connect: { id: session.user.id } },
+          },
+        });
+
+        return res.status(200).json(photo);
+      });
 
       break;
     }
