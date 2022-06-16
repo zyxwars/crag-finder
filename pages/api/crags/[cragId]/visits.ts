@@ -39,7 +39,7 @@ export default async function handler(
         },
       });
 
-      await form.parse(req, async (err, fields, files) => {
+      form.parse(req, async (err, fields, files) => {
         // Extract photos
         let photos = [];
         if (Array.isArray(files.photos)) photos = files.photos;

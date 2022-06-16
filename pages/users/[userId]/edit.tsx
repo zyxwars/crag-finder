@@ -1,11 +1,16 @@
 import FetchError from "$components/FetchError";
-import { Box, Spinner, Heading } from "@chakra-ui/react";
+import ImageUpload from "$components/ImageUpload";
+import { fetchError } from "$lib/toastOptions";
+import { Box, Spinner, Heading, useToast } from "@chakra-ui/react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import React from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 const Page = () => {
   const router = useRouter();
+  const { mutate } = useSWRConfig();
+  const toast = useToast();
 
   const { data: user, error: userError } = useSWR(
     "/api/users/" + router?.query?.userId + "/private/"
@@ -23,6 +28,25 @@ const Page = () => {
   return (
     <div>
       <Heading>{user.name}</Heading>
+      <ImageUpload
+        options={{ maxFiles: 1 }}
+        onPost={async (files) => {
+          const formData = new FormData();
+          formData.append("avatar", files[0]);
+
+          try {
+            const url = "/api/users/" + user.id + "/avatar";
+            const res = await axios.post(url, formData);
+
+            await mutate(url);
+          } catch (error: any) {
+            toast({
+              ...fetchError,
+              description: error?.response.data || error?.message,
+            });
+          }
+        }}
+      />
     </div>
   );
 };

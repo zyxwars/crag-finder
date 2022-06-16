@@ -17,6 +17,7 @@ export default NextAuth({
       authorize: async (credentials) => {
         const user = await prisma.user.findUnique({
           where: { email: credentials?.email },
+          include: { avatar: true },
         });
 
         if (
@@ -32,15 +33,15 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (!user) return token;
 
-      const { id, name } = user;
-      token = { ...token, id, name };
+      const { id, name, avatar } = user;
+      token = { ...token, id, name, avatar };
 
       return token;
     },
     async session({ session, token }) {
-      const { id, name } = token;
+      const { id, name, avatar } = token;
 
-      session.user = { id, name };
+      session.user = { id, name, image: avatar?.newFilename };
 
       return session;
     },

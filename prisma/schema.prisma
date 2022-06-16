@@ -15,6 +15,7 @@ model User {
   email     String     @unique
   name      String     @unique
   password  String
+  avatar    Photo?
   crags     Crag[]
   comments  Comment[]
   cragRoles CragRole[]
@@ -73,6 +74,8 @@ model Photo {
   id               Int    @id @default(autoincrement())
   newFilename      String
   originalFilename String
-  Visit            Visit? @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visit            Visit? @relation(fields: [visitId], references: [id], onDelete: Cascade)
   visitId          Int?
+  user             User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int?   @unique
 }
