@@ -40,6 +40,7 @@ export default async function handler(
       const form = formidable({
         uploadDir: process.env.UPLOAD_DIR,
         keepExtensions: true,
+        maxFiles: 1,
         filter: function ({ name, originalFilename, mimetype }) {
           // keep only images
           return !!(mimetype && mimetype.includes("image"));
