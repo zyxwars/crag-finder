@@ -8,6 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import styles from "./Navbar.module.css";
@@ -42,7 +43,17 @@ const Navbar = () => {
 
       <Spacer />
 
-      <Text>{session?.user.name}</Text>
+      {session && (
+        <>
+          <Image
+            src={"/api/uploads/" + session.user.image}
+            alt="avatar"
+            width="50px"
+            height="50px"
+          />
+          <Text textColor="white">{session.user.name}</Text>
+        </>
+      )}
     </Flex>
   );
 };
