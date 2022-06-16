@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "$lib/db/prisma";
-import { sendBadRequest, sendNoSession } from "$lib/responses";
+import { sendBadRequest, sendError, sendNoSession } from "$lib/responses";
 import formidable, { File, Files } from "formidable";
 import { Visit } from "@prisma/client";
 import { publicUserSelector } from "$lib/db/selectors";
@@ -21,6 +21,9 @@ export default async function handler(
   // TODO: Handle crag doesn't exist
   const { cragId } = req.query;
 
+  // Hack for error handling formidable callbacks
+  let isReturned = false;
+
   switch (method) {
     case "POST":
       // Check session
@@ -31,9 +34,12 @@ export default async function handler(
       const form = formidable({
         uploadDir: process.env.UPLOAD_DIR,
         keepExtensions: true,
-        // This is important to access all files in the callback
+        // This is important to access all files in the callback, otherwise only the last one is accepted
         multiples: true,
-        filter: function ({ name, originalFilename, mimetype }) {
+        filter: function ({ mimetype, originalFilename }) {
+          // TODO: the photo gets to here, but the is undefined in form.parse
+          console.log(originalFilename);
+
           // keep only images
           return !!(mimetype && mimetype.includes("image"));
         },
@@ -59,9 +65,11 @@ export default async function handler(
           },
         });
 
+        isReturned = true;
         return res.status(201).json(visit);
       });
 
+      if (!isReturned) sendError(res);
       break;
     default:
       // GET
