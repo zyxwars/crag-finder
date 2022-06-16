@@ -21,7 +21,7 @@ export default async function handler(
   // TODO: Handle crag doesn't exist
   const { cragId } = req.query;
 
-  // Hack for error handling formidable callbacks
+  // TODO: Hack for error handling formidable callbacks
   let isReturned = false;
 
   switch (method) {
@@ -37,9 +37,6 @@ export default async function handler(
         // This is important to access all files in the callback, otherwise only the last one is accepted
         multiples: true,
         filter: function ({ mimetype, originalFilename }) {
-          // TODO: the photo gets to here, but the is undefined in form.parse
-          console.log(originalFilename);
-
           // keep only images
           return !!(mimetype && mimetype.includes("image"));
         },
@@ -65,11 +62,8 @@ export default async function handler(
           },
         });
 
-        isReturned = true;
         return res.status(201).json(visit);
       });
-
-      if (!isReturned) sendError(res);
       break;
     default:
       // GET
