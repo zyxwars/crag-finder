@@ -32,6 +32,7 @@ model Crag {
   comments  Comment[]
   cragRoles CragRole[]
   visits    Visit[]
+  Photo     Photo[]
 }
 
 enum Role {
@@ -78,4 +79,6 @@ model Photo {
   visitId          Int?
   user             User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int?   @unique
+  Crag             Crag?  @relation(fields: [cragId], references: [id], onDelete: Cascade)
+  cragId           Int?
 }

@@ -33,6 +33,7 @@ import axios from "axios";
 import { fetchError } from "$lib/toastOptions";
 import DeleteCragDialog from "$components/Modals/DeleteCragDialog";
 import { getCragWithPermissions } from "$lib/db/queries";
+import ImageUpload from "$components/ImageUpload";
 
 function EditableControls() {
   const {
@@ -107,7 +108,7 @@ const Page = () => {
           try {
             const res = await axios.put(url, { name: data });
             await mutate(url);
-          } catch (error) {
+          } catch (error: any) {
             toast({
               ...fetchError,
               description: error?.response.data || error?.message,
@@ -128,7 +129,7 @@ const Page = () => {
           try {
             const res = await axios.put(url, { body: data });
             await mutate(url);
-          } catch (error) {
+          } catch (error: any) {
             toast({
               ...fetchError,
               description: error?.response.data || error?.message,
@@ -149,7 +150,7 @@ const Page = () => {
           try {
             const res = await axios.put(url, { tags: data });
             await mutate(url);
-          } catch (error) {
+          } catch (error: any) {
             toast({
               ...fetchError,
               description: error?.response.data || error?.message,
@@ -161,10 +162,6 @@ const Page = () => {
         <EditableInput />
         <EditableControls />
       </Editable>
-
-      {crag.permissions?.deleteComments && (
-        <Comments data={comments} error={commentsError} />
-      )}
     </CragContext.Provider>
   );
 };
