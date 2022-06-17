@@ -6,7 +6,6 @@
 
 ### Fix
 
-- Fix grid
 - Fix context default value, todo in comments
 - Fix post empty comment, use hook form
 - Check api endpoints leaking db fields like password to public

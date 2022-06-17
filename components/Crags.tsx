@@ -33,16 +33,10 @@ const Crags = ({ data, error }: Props) => {
     );
 
   return (
-    <SimpleGrid minChildWidth="12rem" spacing="1rem">
+    <Grid templateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={6}>
       {data.map((crag: Crag) => (
         <Link key={crag.id} href={"/crags/" + crag.id}>
-          <LinkBox
-            mb="4"
-            maxW="sm"
-            borderWidth="1px"
-            borderRadius="lg"
-            overflow="hidden"
-          >
+          <LinkBox mb="4" borderWidth="1px" borderRadius="lg" overflow="hidden">
             <Image
               height="10rem"
               width="100%"
@@ -59,7 +53,7 @@ const Crags = ({ data, error }: Props) => {
           </LinkBox>
         </Link>
       ))}
-    </SimpleGrid>
+    </Grid>
   );
 };
 
