@@ -2,18 +2,20 @@ import FetchError from "$components/FetchError";
 import { getPublicUser } from "$lib/db/queries";
 import prisma from "$lib/db/prisma";
 import { redirectSsr } from "$lib/redirectSsr";
-import { Box, Heading, Spinner } from "@chakra-ui/react";
+import { Box, Flex, Heading, Spinner } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
+import Image from "next/image";
+import { PublicUser } from "$lib/db/selectors";
 
 const Page = () => {
   const router = useRouter();
 
-  const { data: user, error: userError } = useSWR(
+  const { data: user, error: userError } = useSWR<PublicUser, any>(
     "/api/users/" + router.query.userId
   );
 
@@ -27,9 +29,15 @@ const Page = () => {
     );
 
   return (
-    <div>
+    <Flex align="center" direction="column">
       <Heading>{user.name}</Heading>
-    </div>
+      <Image
+        width="100"
+        height="100"
+        alt="avatar"
+        src={"/api/uploads/" + user.avatar?.newFilename}
+      />
+    </Flex>
   );
 };
 

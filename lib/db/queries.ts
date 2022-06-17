@@ -24,6 +24,12 @@ export const getPrivateUser = async (
   return user;
 };
 
+export const getUserProfile = async (userId: number) =>
+  await prisma.user.findUnique({
+    where: { id: userId },
+    select: publicUserSelector,
+  });
+
 export const getAllCrags = async () => await prisma.crag.findMany();
 
 export const getCragWithPermissions = async (

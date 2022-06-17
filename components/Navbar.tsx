@@ -1,4 +1,5 @@
 import {
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -9,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import styles from "./Navbar.module.css";
@@ -20,14 +22,14 @@ const Navbar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <Flex width="100%" height="3rem" bgColor="black" align="center">
+    <Flex width="100%" height="3rem" bgColor="black" align="center" px="1rem">
       <Breadcrumb textColor="white">
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
         </BreadcrumbItem>
 
         {crumbs.map((crumb, i) => {
-          // TODO: If part of route doesn't exist don't make it clickable or create it (eg. crags)
+          // TODO: If part of route doesn't exist don't make it clickable or create it (eg. crags redirect to /)
           return (
             <BreadcrumbItem key={i}>
               <BreadcrumbLink
@@ -44,15 +46,18 @@ const Navbar = () => {
       <Spacer />
 
       {session && (
-        <>
-          <Image
-            src={"/api/uploads/" + session.user.image}
-            alt="avatar"
-            width="50px"
-            height="50px"
-          />
-          <Text textColor="white">{session.user.name}</Text>
-        </>
+        <Link href={`/users/${session.user.id}`}>
+          <Flex>
+            <Image
+              src={"/api/uploads/" + session.user.image}
+              alt="avatar"
+              width="25"
+              height="25"
+            />
+
+            <Text textColor="white">{session.user.name}</Text>
+          </Flex>
+        </Link>
       )}
     </Flex>
   );

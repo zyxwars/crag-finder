@@ -1,11 +1,6 @@
 import { CragPermissions } from "$lib/cragRoles";
+import { PublicUser } from "$lib/db/selectors";
 import { Comment, Crag, Photo, Visit } from "@prisma/client";
-
-// User stripped of private fields
-export type PublicUser = {
-  id: number;
-  name: string;
-};
 
 export type Author = PublicUser;
 

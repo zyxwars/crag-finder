@@ -30,6 +30,7 @@ import { CragContext } from "store";
 import { fetchError } from "$lib/toastOptions";
 import { FaReply, FaTrash } from "react-icons/fa";
 import SimpleDeleteDialog from "$components/Modals/SimpleDeleteDialog";
+import Image from "next/image";
 
 interface Props {
   comment: CommentWithAuthor;
@@ -83,7 +84,16 @@ const Comment = ({ comment, parentAuthor, canDelete }: Props) => {
       </SimpleDeleteDialog>
 
       <Box my="0.5rem">
-        <Text fontSize="sm">{comment.author.name}</Text>
+        <Flex>
+          <Image
+            src={"/api/uploads/" + comment.author.avatar?.newFilename}
+            alt="avatar"
+            width="25"
+            height="25"
+          />
+          <Text fontSize="sm">{comment.author.name}</Text>
+        </Flex>
+
         <Flex align="center">
           {parentAuthor && (
             <Text mr="0.5rem" fontWeight="bold">
