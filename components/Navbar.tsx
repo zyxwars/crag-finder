@@ -1,10 +1,12 @@
 import {
+  Avatar,
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
   Flex,
+  HStack,
   Spacer,
   Text,
 } from "@chakra-ui/react";
@@ -47,16 +49,11 @@ const Navbar = () => {
 
       {session && (
         <Link href={`/users/${session.user.id}`}>
-          <Flex>
-            <Image
-              src={"/api/uploads/" + session.user.image}
-              alt="avatar"
-              width="25"
-              height="25"
-            />
+          <HStack spacing="0.5rem">
+            <Avatar src={"/api/uploads/" + session.user.image} />
 
             <Text textColor="white">{session.user.name}</Text>
-          </Flex>
+          </HStack>
         </Link>
       )}
     </Flex>

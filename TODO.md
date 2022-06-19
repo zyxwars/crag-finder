@@ -3,6 +3,8 @@
 - Refresh user data (image >> session) on edit
 - Check permission and redirect to login before allowing edit page access, send data to client > allow access to certain data based on permissions
 - Add search
+- Error handling for formidable
+- Error handling for all endpoints (trycatch log 500)
 
 ### Fix
 
@@ -14,7 +16,6 @@
 ### v 0.1
 
 - Delete images when the related record is deleted
-- Server side error handling
 
 - [x] Visits
 - [x] Comments

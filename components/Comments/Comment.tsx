@@ -20,6 +20,8 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   IconButton,
+  Avatar,
+  HStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -84,15 +86,13 @@ const Comment = ({ comment, parentAuthor, canDelete }: Props) => {
       </SimpleDeleteDialog>
 
       <Box my="0.5rem">
-        <Flex>
-          <Image
+        <HStack spacing="0.5rem" align="center">
+          <Avatar
+            size="sm"
             src={"/api/uploads/" + comment.author.avatar?.newFilename}
-            alt="avatar"
-            width="25"
-            height="25"
           />
           <Text fontSize="sm">{comment.author.name}</Text>
-        </Flex>
+        </HStack>
 
         <Flex align="center">
           {parentAuthor && (

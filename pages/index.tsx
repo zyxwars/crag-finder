@@ -6,10 +6,11 @@ import prisma from "$lib/db/prisma";
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
-import { Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
 import { getAllCrags } from "$lib/db/queries";
+import Search from "$components/Search";
 
 interface Props {
   session: Session | null;
@@ -19,7 +20,7 @@ const Home: NextPage<Props> = ({ session }) => {
   const { data, error } = useSWR("/api/crags");
 
   return (
-    <main>
+    <>
       {session && (
         <>
           <Link href="/crags/create">
@@ -28,8 +29,9 @@ const Home: NextPage<Props> = ({ session }) => {
         </>
       )}
 
+      <Search />
       <Crags data={data} error={error} />
-    </main>
+    </>
   );
 };
 
