@@ -13,3 +13,6 @@ export const sendNoPermissions = (
 
 export const sendBadRequest = (res: NextApiResponse, message = "bad_request") =>
   res.status(400).send(message);
+
+export const sendNotFound = (res: NextApiResponse, message = "not_found") =>
+  res.status(404).send(message);

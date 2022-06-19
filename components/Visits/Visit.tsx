@@ -67,7 +67,7 @@ const Visit = ({ visit }: { visit: VisitWithAuthorPhotos }) => {
             ))}
           </Flex>
           {(visit.authorId === session?.user.id ||
-            crag?.permissions?.deleteVisit) && (
+            crag?.permissions?.deleteVisits) && (
             <IconButton aria-label="delete visit" onClick={onOpen}>
               <FaTrash />
             </IconButton>

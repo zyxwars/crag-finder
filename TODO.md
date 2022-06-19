@@ -15,7 +15,6 @@
 
 - Delete images when the related record is deleted
 - Server side error handling
-- Check user permissions serverside
 
 - [x] Visits
 - [x] Comments

@@ -2,7 +2,14 @@ import { Role } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "$lib/db/prisma";
-import { sendBadRequest, sendNoSession } from "$lib/responses";
+import {
+  sendBadRequest,
+  sendNoPermissions,
+  sendNoSession,
+  sendNotFound,
+} from "$lib/responses";
+import { getPermissions } from "$lib/cragRoles";
+import { canDeleteCragChild } from "$lib/canDelete";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,9 +24,25 @@ export default async function handler(
       // Check session
       if (!session) return sendNoSession(res);
 
-      // TODO: Crag mod perms
-      // or user is author check
+      // Check permissions
+      const permissions = await getPermissions(Number(cragId), session.user.id);
+      const visit = await prisma.visit.findUnique({
+        where: { id: Number(visitId) },
+      });
 
+      if (!visit) return sendNotFound(res, "no_visit");
+
+      if (
+        canDeleteCragChild(
+          session,
+          Number(cragId),
+          visit,
+          !!permissions?.deleteVisits
+        )
+      )
+        return sendNoPermissions(res, "not_owner_or_allowed");
+
+      // Delete visit
       const deletedVisit = await prisma.visit.delete({
         where: { id: Number(visitId) },
       });

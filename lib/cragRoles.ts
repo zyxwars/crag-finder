@@ -8,7 +8,7 @@ export interface CragPermissions {
   deletePhotos?: boolean;
   deleteComments?: boolean;
   deleteCrag?: boolean;
-  deleteVisit?: boolean;
+  deleteVisits?: boolean;
 }
 
 interface RolePermissions {
@@ -24,13 +24,13 @@ export const cragRoles: RolePermissions = {
     deletePhotos: true,
     deleteComments: true,
     deleteCrag: true,
-    deleteVisit: true,
+    deleteVisits: true,
   },
   MODERATOR: {
     postPhotos: true,
     deletePhotos: true,
     deleteComments: true,
-    deleteVisit: true,
+    deleteVisits: true,
   },
   OBSERVER: null,
 };
