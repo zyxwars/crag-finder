@@ -24,7 +24,9 @@ const Home: NextPage<Props> = ({ session }) => {
       {session && (
         <>
           <Link href="/crags/create">
-            <Button>Create a new crag</Button>
+            <Button pos="fixed" bottom="25px" right="25px">
+              Create a new crag
+            </Button>
           </Link>
         </>
       )}
