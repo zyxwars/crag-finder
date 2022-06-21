@@ -32,7 +32,8 @@ model Crag {
   comments  Comment[]
   cragRoles CragRole[]
   visits    Visit[]
-  Photo     Photo[]
+  photos    Photo[]
+  thumbnail String?
 }
 
 enum Role {

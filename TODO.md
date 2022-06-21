@@ -1,5 +1,6 @@
 ### Add
 
+- Add crag thumbnail, crag photos
 - Add search
 - Error handling for formidable
 - Error handling for all endpoints (trycatch log 500)

@@ -1,5 +1,6 @@
 import { fetchError } from "$lib/toastOptions";
 import {
+  Box,
   Button,
   Flex,
   FormControl,
@@ -31,7 +32,7 @@ const Page = () => {
       const res = await axios.post("/api/crags", data);
 
       await router.push("/crags/" + res.data.id);
-    } catch (error) {
+    } catch (error: any) {
       toast({
         ...fetchError,
         description: error?.response.data || error?.message,
@@ -40,51 +41,49 @@ const Page = () => {
   });
 
   return (
-    <>
-      <form onSubmit={onSubmit}>
-        <Flex direction="column" align="center">
-          <FormControl isInvalid={!!errors.name}>
-            <Input
-              placeholder="Crag name"
-              {...register("name", {
-                required: "This is required",
-              })}
-            />
-            <FormErrorMessage>
-              {errors.name && errors.name.message}
-            </FormErrorMessage>
-          </FormControl>
+    <form onSubmit={onSubmit}>
+      <Flex direction="column" align="center">
+        <FormControl isInvalid={!!errors.name}>
+          <Input
+            placeholder="Crag name"
+            {...register("name", {
+              required: "This is required",
+            })}
+          />
+          <FormErrorMessage>
+            {errors.name && errors.name.message}
+          </FormErrorMessage>
+        </FormControl>
 
-          <FormControl isInvalid={!!errors.body}>
-            <Textarea
-              placeholder="Crag content (markdown)"
-              {...register("body", {
-                required: "This is required",
-              })}
-            />
-            <FormErrorMessage>
-              {errors.body && errors.body.message}
-            </FormErrorMessage>
-          </FormControl>
+        <FormControl isInvalid={!!errors.body}>
+          <Textarea
+            placeholder="Crag content (markdown)"
+            {...register("body", {
+              required: "This is required",
+            })}
+          />
+          <FormErrorMessage>
+            {errors.body && errors.body.message}
+          </FormErrorMessage>
+        </FormControl>
 
-          <FormControl isInvalid={!!errors.name}>
-            <Input
-              placeholder="Tags (El Capitan,Yosemite,Granite,Beginner)"
-              {...register("tags", {
-                required: "This is required",
-              })}
-            />
-            <FormErrorMessage>
-              {errors.tags && errors.tags.message}
-            </FormErrorMessage>
-          </FormControl>
+        <FormControl isInvalid={!!errors.name}>
+          <Input
+            placeholder="Tags (El Capitan,Yosemite,Granite,Beginner)"
+            {...register("tags", {
+              required: "This is required",
+            })}
+          />
+          <FormErrorMessage>
+            {errors.tags && errors.tags.message}
+          </FormErrorMessage>
+        </FormControl>
 
-          <Button isLoading={isSubmitting} type="submit">
-            Submit
-          </Button>
-        </Flex>
-      </form>
-    </>
+        <Button isLoading={isSubmitting} type="submit">
+          Submit
+        </Button>
+      </Flex>
+    </form>
   );
 };
 
