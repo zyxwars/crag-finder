@@ -11,29 +11,35 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  name      String     @unique
-  password  String
-  avatar    Photo?
-  crags     Crag[]
-  comments  Comment[]
-  cragRoles CragRole[]
-  visits    Visit[]
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String @unique
+  password String
+  avatar   Photo? @relation("Photo_avatarToUser")
+
+  crags       Crag[]
+  cragRoles   CragRole[]
+  cragRatings CragRating[]
+
+  comments Comment[]
+  visits   Visit[]
+  photos   Photo[]   @relation("Photo_authorToUser")
 }
 
 model Crag {
-  id        Int        @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   name      String
   body      String
   tags      String
-  author    User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId  Int?
+  ratings   CragRating[]
+  thumbnail String?
+  photos    Photo[]
+
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  Int
   comments  Comment[]
   cragRoles CragRole[]
   visits    Visit[]
-  photos    Photo[]
-  thumbnail String?
 }
 
 enum Role {
@@ -43,43 +49,63 @@ enum Role {
 }
 
 model CragRole {
-  id     Int   @id @default(autoincrement())
-  role   Role  @default(OBSERVER)
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int?
-  crag   Crag? @relation(fields: [cragId], references: [id], onDelete: Cascade)
-  cragId Int?
+  id   Int  @id @default(autoincrement())
+  role Role @default(OBSERVER)
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  crag   Crag @relation(fields: [cragId], references: [id], onDelete: Cascade)
+  cragId Int
+}
+
+model CragRating {
+  id     Int @id @default(autoincrement())
+  rating Int
+
+  crag     Crag @relation(fields: [cragId], references: [id], onDelete: Cascade)
+  cragId   Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int  @unique
 }
 
 model Comment {
   id       Int       @id @default(autoincrement())
   body     String
-  author   User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId Int?
-  crag     Crag?     @relation(fields: [cragId], references: [id], onDelete: Cascade)
-  cragId   Int?
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId Int?
   replies  Comment[] @relation("CommentReplies")
+
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+  crag     Crag @relation(fields: [cragId], references: [id], onDelete: Cascade)
+  cragId   Int
 }
 
 model Visit {
-  id       Int     @id @default(autoincrement())
-  crag     Crag?   @relation(fields: [cragId], references: [id], onDelete: Cascade)
-  cragId   Int?
-  author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId Int?
-  photos   Photo[]
+  id        Int      @id @default(autoincrement())
+  reactions String[]
+  photos    Photo[]
+
+  crag     Crag @relation(fields: [cragId], references: [id], onDelete: Cascade)
+  cragId   Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int
 }
 
 model Photo {
   id               Int    @id @default(autoincrement())
   newFilename      String
   originalFilename String
-  visit            Visit? @relation(fields: [visitId], references: [id], onDelete: Cascade)
-  visitId          Int?
-  user             User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           Int?   @unique
-  Crag             Crag?  @relation(fields: [cragId], references: [id], onDelete: Cascade)
-  cragId           Int?
+
+
+  author   User @relation("Photo_authorToUser", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int
+
+
+  visit   Visit? @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visitId Int?
+  crag    Crag?  @relation(fields: [cragId], references: [id], onDelete: Cascade)
+  cragId  Int?
+  user    User?  @relation("Photo_avatarToUser", fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int?   @unique
 }

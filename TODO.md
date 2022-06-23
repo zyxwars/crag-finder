@@ -1,5 +1,7 @@
 ### Add
 
+- Fix api to accommodate for prisma refactoring
+
 - Add crag thumbnail, crag photos
 - Add search
 - Error handling for formidable
@@ -9,6 +11,7 @@
 
 ### Fix
 
+- Fix userId Int? @unique auto fill, refactor schemas (Photos, etc)
 - Fix context default value, todo in comments
 - Fix post empty comment, use hook form
 - Check api endpoints leaking db fields like password to public
@@ -29,6 +32,7 @@
 
 ### Future
 
+- Use chakra prose instead of markdown renderer
 - Map location
 - Map based search
 - Visit description
