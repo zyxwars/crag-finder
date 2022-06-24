@@ -28,8 +28,6 @@ export default async function handler(
   const { method } = req;
   const { userId } = req.query;
   const session = await getSession({ req });
-  // TODO: Add back the error handling stuff
-  let isReturned = false;
 
   switch (method) {
     case "POST": {
@@ -49,29 +47,40 @@ export default async function handler(
       });
 
       form.parse(req, async (err, fields, files) => {
-        const avatar = files.avatar as File;
-
-        // TODO: if this crashes there could be more old avatars
-        try {
-          const oldPhoto = await prisma.photo.delete({
-            where: { userId: session.user.id },
-          });
-          rmSync(process.env.UPLOAD_DIR + "/" + oldPhoto.newFilename);
-        } catch (error) {
-          //TODO: might just not exist
-          console.log(error);
+        if (err) {
+          console.log(err);
+          return sendError(res);
         }
 
-        const photo = await prisma.photo.create({
-          data: {
-            newFilename: avatar.newFilename,
-            originalFilename:
-              avatar.originalFilename || session.user.name + "'s avatar",
-            user: { connect: { id: session.user.id } },
-          },
-        });
+        try {
+          const avatar = files.avatar as File;
 
-        return res.status(200).json(photo);
+          // TODO: if this crashes there could be more old avatars
+          try {
+            const oldPhoto = await prisma.photo.delete({
+              where: { userId: session.user.id },
+            });
+            rmSync(process.env.UPLOAD_DIR + "/" + oldPhoto.newFilename);
+          } catch (error) {
+            //TODO: Handle if the error is no exist
+            // console.log(error);
+          }
+
+          const photo = await prisma.photo.create({
+            data: {
+              newFilename: avatar.newFilename,
+              originalFilename:
+                avatar.originalFilename || session.user.name + "'s avatar",
+              author: { connect: { id: session.user.id } },
+              user: { connect: { id: session.user.id } },
+            },
+          });
+
+          return res.status(200).json(photo);
+        } catch (error) {
+          console.log(error);
+          return sendError(res);
+        }
       });
 
       break;

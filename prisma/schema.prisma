@@ -66,6 +66,8 @@ model CragRating {
   cragId   Int
   author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int  @unique
+
+  @@unique([cragId, authorId])
 }
 
 model Comment {

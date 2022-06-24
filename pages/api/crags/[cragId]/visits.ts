@@ -21,9 +21,6 @@ export default async function handler(
   // TODO: Handle crag doesn't exist
   const { cragId } = req.query;
 
-  // TODO: Hack for error handling formidable callbacks
-  let isReturned = false;
-
   switch (method) {
     case "POST":
       // Check session
@@ -43,27 +40,39 @@ export default async function handler(
       });
 
       form.parse(req, async (err, fields, files) => {
-        // Extract photos
-        let photos = [];
-        if (Array.isArray(files.photos)) photos = files.photos;
-        else photos = [files.photos];
+        if (err) {
+          console.log(err);
+          return sendError(res);
+        }
 
-        // Create visit
-        const visit = await prisma.visit.create({
-          data: {
-            photos: {
-              create: photos.map((photo) => ({
-                newFilename: photo.newFilename,
-                originalFilename: photo.originalFilename || photo.newFilename,
-              })),
+        try {
+          // Extract photos
+          let photos = [];
+          if (Array.isArray(files.photos)) photos = files.photos;
+          else photos = [files.photos];
+
+          // Create visit
+          const visit = await prisma.visit.create({
+            data: {
+              photos: {
+                create: photos.map((photo) => ({
+                  newFilename: photo.newFilename,
+                  originalFilename: photo.originalFilename || photo.newFilename,
+                  author: { connect: { id: session.user.id } },
+                })),
+              },
+              author: { connect: { id: session.user.id } },
+              crag: { connect: { id: Number(cragId) } },
             },
-            author: { connect: { id: session.user.id } },
-            crag: { connect: { id: Number(cragId) } },
-          },
-        });
+          });
 
-        return res.status(201).json(visit);
+          return res.status(201).json(visit);
+        } catch (error: any) {
+          console.log(error);
+          return sendError(res);
+        }
       });
+
       break;
     default:
       // GET

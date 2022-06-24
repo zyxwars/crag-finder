@@ -33,7 +33,7 @@ export default async function handler(
       if (!visit) return sendNotFound(res, "no_visit");
 
       if (
-        canDeleteCragChild(
+        !canDeleteCragChild(
           session,
           Number(cragId),
           visit,

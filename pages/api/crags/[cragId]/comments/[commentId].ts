@@ -55,10 +55,10 @@ export default async function handler(
         where: { id: Number(commentId) },
       });
 
-      if (!comment) return sendNotFound(res, "no_visit");
+      if (!comment) return sendNotFound(res, "no_comment");
 
       if (
-        canDeleteCragChild(
+        !canDeleteCragChild(
           session,
           Number(cragId),
           comment,

@@ -34,28 +34,29 @@ export default async function handler(
       const { rating } = req.body;
       if (!rating) sendBadRequest(res, "no_rating");
 
-      // Create or override rating
-      const newRating = await prisma.cragRating.upsert({
-        where: { cragId },
-        update: {
-          rating,
-        },
-        create: {
-          rating,
-          Crag: { connect: { id: Number(cragId) } },
-          author: { connect: { id: session.user.id } },
-        },
-      });
-      // const oldRating = await prisma.cragRating.findFirst({
-      //   where: {},
-      // });
-      // if (oldRating)
-      //   await prisma.cragRating.update({
-      //     where: { id: oldRating.id },
-      //     data: {
-      //       rating,
-      //     },
-      //   });
+      try {
+        const newRating = await prisma.cragRating.upsert({
+          where: {
+            cragId_authorId: {
+              authorId: session.user.id,
+              cragId: Number(cragId),
+            },
+          },
+          update: {
+            rating,
+          },
+          create: {
+            crag: { connect: { id: Number(cragId) } },
+            author: { connect: { id: session.user.id } },
+            rating,
+          },
+        });
+
+        return res.status(201).json(newRating);
+      } catch (error) {
+        console.log(error);
+        return sendError(res);
+      }
 
       break;
     default: {

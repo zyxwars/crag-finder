@@ -1,7 +1,5 @@
 ### Add
 
-- Fix api to accommodate for prisma refactoring
-
 - Add crag thumbnail, crag photos
 - Add search
 - Error handling for formidable
@@ -37,3 +35,4 @@
 - Map based search
 - Visit description
 - Direct description image embedding
+- Invalidate JWTs
