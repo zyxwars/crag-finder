@@ -36,7 +36,9 @@ export const getCragWithPermissions = async (
   cragId: number,
   session: Session | null
 ) => {
-  const crag = await prisma.crag.findUnique({ where: { id: cragId } });
+  const crag = await prisma.crag.findUnique({
+    where: { id: cragId },
+  });
 
   const permissions =
     session && crag

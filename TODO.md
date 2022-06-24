@@ -1,10 +1,9 @@
 ### Add
 
+- Add rating
 - Add crag thumbnail, crag photos
 - Add search
-- Error handling for formidable
 - Error handling for all endpoints (trycatch log 500)
-- Refresh user data (image >> session) on edit
 - Check permission and redirect to login before allowing edit page access, send data to client > allow access to certain data based on permissions
 
 ### Fix

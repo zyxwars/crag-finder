@@ -28,6 +28,7 @@ import { useDropzone } from "react-dropzone";
 import Visits from "$components/Visits/Visits";
 import CreateVisit from "$components/Visits/CreateVisit";
 import { getCragWithPermissions } from "$lib/db/queries";
+import CragRating from "$components/CragRating";
 
 interface Props {
   crag: CragWithPermissions;
@@ -69,6 +70,8 @@ const Page = ({ crag }: Props) => {
             <Tag key={i}>{tag}</Tag>
           ))}
         </Box>
+
+        <CragRating />
 
         <Heading>Visits</Heading>
         {status === "authenticated" && <CreateVisit />}

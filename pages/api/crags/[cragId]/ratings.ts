@@ -11,12 +11,6 @@ import formidable, { File, Files } from "formidable";
 import { Visit } from "@prisma/client";
 import { publicUserSelector } from "$lib/db/selectors";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -31,8 +25,12 @@ export default async function handler(
       if (!session) return sendNoSession(res);
 
       // Validate data
-      const { rating } = req.body;
-      if (!rating) sendBadRequest(res, "no_rating");
+      let { rating } = req.body;
+      if (!rating) return sendBadRequest(res, "no_rating");
+      if (rating > 5 || rating < 1)
+        return sendBadRequest(res, "rating_out_of_range");
+
+      rating = Math.floor(rating);
 
       try {
         const newRating = await prisma.cragRating.upsert({
@@ -74,7 +72,7 @@ export default async function handler(
 
       const averageRating = totalRating / crag.ratings.length;
 
-      return res.status(200).json({ averageRating });
+      return res.status(200).json({ averageRating, ratings: crag.ratings });
     }
   }
 }
